@@ -1,0 +1,42 @@
+---
+description: Gilaki IPA transcriber conventions
+alwaysApply: true
+---
+
+# Gilaki IPA transcriber
+
+This repo is a privacy-split Gilaki transcriber:
+
+- Server owns models + standard transcript maps.
+- Clients own audio files + custom maps.
+- Uploaded audio is processed in memory (plus a short-lived ffmpeg temp file deleted in `finally`) and must not be kept as a library.
+- Do not add user accounts, API keys, object storage, or an uploads/ directory in v1.
+- Public API: https://1404kingstreet.com/gilaki-api
+- Public app: https://1404kingstreet.com/gilaki-app
+- Internal bind: 127.0.0.1:18741
+- Android applicationId: com.kingstreet.gilaki
+- Mapped text is the main result; IPA is optional. Do not add in-session IPA editing in v1.
+- Python packages live only in repo-root `.venv/` (gitignored). Never system pip.
+
+Read before editing: `docs/README.md`, `docs/product/plan.md`, `docs/engineering/api.md`, `schemas/map.schema.json`.
+
+## API
+
+- Keep FastAPI routes aligned with `docs/engineering/api.md`.
+- Mapping uses longest-match IPA keys. Never split `tʃ` into `t` + `ʃ` if a rule exists.
+- `ASR_BACKEND=mock` must keep working so clients can be developed without models.
+- Errors return `{ "ok": false, "error": { "code": "...", "message": "..." } }` via HTTPException detail, or wrap consistently.
+- Do not bind 0.0.0.0:8080 on the public host. Do not expose 18741.
+
+## Clients
+
+- Default flow: `POST /v1/recognize` without `map_json`, then apply the map on device.
+- Custom maps: localStorage / DataStore only.
+- Audio: app-private storage only.
+- No API key field in v1 Settings.
+
+## Language
+
+- Target language is Gilaki (`glk`). Inventory lives in `schemas/gilaki_inventory.json`.
+- Prefer broad phonemic IPA over narrow phonetic detail.
+- Preset `lossy-persian` may collapse vowels; other scholarly presets should keep `ə`.

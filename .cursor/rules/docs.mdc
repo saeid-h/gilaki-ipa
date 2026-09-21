@@ -1,0 +1,17 @@
+---
+description: How to create and update Gilaki IPA documentation
+alwaysApply: true
+---
+
+# Documentation
+
+Read `docs/README.md` before adding or rewriting Markdown.
+
+- Durable docs live under `docs/product/`, `docs/engineering/`, or `docs/agents/`. Repo root may have `README.md` and `LICENSE` only. Directly in `docs/`: catalog `README.md` and the pointer `PROJECT_PLAN.md`.
+- Catalog: `docs/README.md`. New or renamed docs get a row there in the same change.
+- Source of truth for product: `docs/product/plan.md`. Do not fork it into `PROJECT_PLAN.md`.
+- Look and feel: `docs/product/design.md`. HTTP: `docs/engineering/api.md`. Linux run: `docs/engineering/deploy.md`.
+- **Update** the matching file when behaviour changes. Same chat/commit, not later.
+- **Create** a new doc only for a new durable topic or audience that does not fit an existing file, and only inside those three buckets.
+- Do not add status logs, duplicate plans, or unlocked edits to §3. Changing a locked row needs an explicit plan revision.
+- Do not put `plan.md` or `design.md` at repo root.

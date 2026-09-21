@@ -1,0 +1,38 @@
+from app.rewriter import apply_map
+
+
+VAR_G = {
+    "id": "t",
+    "name": "t",
+    "script": "Arab",
+    "normalize": "NFC",
+    "separator": "",
+    "rules": [
+        {"ipa": "tʃ", "out": "چ"},
+        {"ipa": "ə", "out": "ٚ"},
+        {"ipa": "m", "out": "م"},
+        {"ipa": "ʃ", "out": "ش"},
+        {"ipa": "n", "out": "ن"},
+        {"ipa": "ɒ", "out": "آ"},
+    ],
+}
+
+
+def test_longest_match_affricate():
+    assert apply_map("tʃ ə", VAR_G) == "چٚ"
+
+
+def test_schwa_and_rtl_letters():
+    assert apply_map("m ə ʃ ə n ɒ", VAR_G) == "مٚشٚنآ"
+
+
+def test_lossy_persian_may_collapse_schwa():
+    from app.catalog import get_preset
+    from app.rewriter import apply_map
+
+    lossy = get_preset("lossy-persian")
+    assert lossy and lossy.get("lossy") is True
+    out = apply_map("ə", lossy)
+    assert "ə" not in out
+    assert out
+

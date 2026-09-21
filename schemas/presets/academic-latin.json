@@ -1,0 +1,27 @@
+{
+  "id": "academic-latin",
+  "name": "Academic Latin",
+  "description": "Latin transcription close to common Iranianist practice.",
+  "script": "Latn",
+  "direction": "ltr",
+  "lossy": false,
+  "normalize": "NFC",
+  "separator": "",
+  "rules": [
+    { "ipa": "tʃ", "out": "č" },
+    { "ipa": "dʒ", "out": "ǰ" },
+    { "ipa": "ʃ", "out": "š" },
+    { "ipa": "ʒ", "out": "ž" },
+    { "ipa": "iː", "out": "ī" },
+    { "ipa": "uː", "out": "ū" },
+    { "ipa": "ə", "out": "ə" },
+    { "ipa": "ä", "out": "ä" },
+    { "ipa": "ɒ", "out": "å" },
+    { "ipa": "ɛ", "out": "ɛ" },
+    { "ipa": "ü", "out": "ü" },
+    { "ipa": "ɣ", "out": "γ" },
+    { "ipa": "x", "out": "x" },
+    { "ipa": "ʔ", "out": "'" },
+    { "ipa": "ŋ", "out": "ŋ" }
+  ]
+}

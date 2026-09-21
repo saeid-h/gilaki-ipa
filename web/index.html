@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gilaki IPA workbench</title>
+  <style>
+    :root { font-family: system-ui, sans-serif; color: #102017; background: #f4f1ea; }
+    body { max-width: 880px; margin: 2rem auto; padding: 0 1rem; }
+    label, button { display: block; margin: .6rem 0; }
+    input[type=text] { width: 100%; padding: .45rem; }
+    textarea { width: 100%; min-height: 6rem; }
+    .rtl { direction: rtl; font-size: 1.4rem; }
+    .card { background: #fff; padding: 1rem; border-radius: 12px; margin: 1rem 0; }
+    .row { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .muted { color: #5b645c; }
+  </style>
+</head>
+<body>
+  <h1>Gilaki IPA workbench</h1>
+  <p class="muted">Audio and custom maps stay in this browser. The server only sees audio during recognition.</p>
+
+  <div class="card">
+    <label>API base URL
+      <input id="base" type="text" placeholder="http://127.0.0.1:8080" />
+    </label>
+    <label>API key (optional)
+      <input id="key" type="text" />
+    </label>
+    <button id="ping">Check server</button>
+    <div id="health" class="muted"></div>
+  </div>
+
+  <div class="card">
+    <label>Audio file <input id="file" type="file" accept="audio/*" /></label>
+    <label>Preset
+      <select id="preset"></select>
+    </label>
+    <button id="send">Recognize</button>
+  </div>
+
+  <div class="card">
+    <h2>IPA</h2>
+    <textarea id="ipa" readonly></textarea>
+    <h2>Mapped</h2>
+    <textarea id="mapped" class="rtl" readonly></textarea>
+  </div>
+
+  <div class="card">
+    <h2>Custom map (local only)</h2>
+    <p class="muted">JSON is saved to localStorage, not the server.</p>
+    <textarea id="custom"></textarea>
+    <button id="saveMap">Save custom map locally</button>
+    <button id="applyLocal">Apply custom map to current IPA</button>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    $("base").value = localStorage.getItem("apiBase") || "http://127.0.0.1:8080";
+    $("key").value = localStorage.getItem("apiKey") || "";
+    $("custom").value = localStorage.getItem("customMap") || JSON.stringify({
+      id: "my-map", name: "My map", script: "Latn", direction: "ltr",
+      rules: [{ipa:"ə", out:"e"}, {ipa:"ʃ", out:"sh"}]
+    }, null, 2);
+
+    function headers() {
+      const h = {};
+      if ($("key").value) h["x-api-key"] = $("key").value;
+      return h;
+    }
+
+    async function loadPresets() {
+      const res = await fetch($("base").value + "/v1/presets", { headers: headers() });
+      const data = await res.json();
+      $("preset").innerHTML = `<option value="">IPA only</option>` +
+        (data.presets || []).map(p => `<option value="${p.id}">${p.name}</option>`).join("");
+    }
+
+    $("ping").onclick = async () => {
+      localStorage.setItem("apiBase", $("base").value);
+      localStorage.setItem("apiKey", $("key").value);
+      try {
+        const res = await fetch($("base").value + "/health");
+        const data = await res.json();
+        $("health").textContent = JSON.stringify(data);
+        await loadPresets();
+      } catch (err) {
+        $("health").textContent = String(err);
+      }
+    };
+
+    $("send").onclick = async () => {
+      const file = $("file").files[0];
+      if (!file) { alert("Choose an audio file"); return; }
+      const body = new FormData();
+      body.append("audio", file);
+      if ($("preset").value) body.append("preset_id", $("preset").value);
+      const res = await fetch($("base").value + "/v1/recognize", {
+        method: "POST", headers: headers(), body
+      });
+      const data = await res.json();
+      $("ipa").value = data.ipa || JSON.stringify(data, null, 2);
+      $("mapped").value = data.mapped_text || "";
+      $("mapped").className = ($("preset").value.includes("persian") || $("preset").value.includes("varg")) ? "rtl" : "";
+    };
+
+    $("saveMap").onclick = () => {
+      JSON.parse($("custom").value);
+      localStorage.setItem("customMap", $("custom").value);
+      alert("Saved in this browser only");
+    };
+
+    $("applyLocal").onclick = async () => {
+      const res = await fetch($("base").value + "/v1/map", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...headers() },
+        body: JSON.stringify({ ipa: $("ipa").value, map: JSON.parse($("custom").value) })
+      });
+      const data = await res.json();
+      $("mapped").value = data.mapped_text || JSON.stringify(data, null, 2);
+    };
+
+    $("ping").click();
+  </script>
+</body>
+</html>

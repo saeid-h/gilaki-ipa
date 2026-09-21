@@ -1,0 +1,29 @@
+{
+  "id": "gilaki-western-broad",
+  "language": "glk",
+  "dialect": "western",
+  "level": "broad",
+  "vowels": ["i", "iː", "e", "ɛ", "ə", "a", "ä", "ɒ", "o", "u", "uː", "ü"],
+  "consonants": [
+    "p", "b", "t", "d", "tʃ", "dʒ", "k", "g", "ʔ",
+    "f", "v", "s", "z", "ʃ", "ʒ", "x", "ɣ", "h",
+    "m", "n", "ŋ", "l", "r", "j"
+  ],
+  "aliases": {
+    "č": "tʃ",
+    "ǰ": "dʒ",
+    "š": "ʃ",
+    "ž": "ʒ",
+    "χ": "x",
+    "ʁ": "ɣ",
+    "ɾ": "r",
+    "æ": "ä",
+    "ɑ": "ɒ",
+    "y": "ü"
+  },
+  "notes": [
+    "Broad phonemic inventory for mapping, not narrow phonetic detail.",
+    "x covers [x]~[χ]; ɣ covers [ɣ]~[ʁ]; r covers [r]~[ɾ].",
+    "Eastern and Galeshi profiles can add or reinterpret a few vowels later."
+  ]
+}

@@ -1,0 +1,14 @@
+[Unit]
+Description=Gilaki IPA API
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/opt/gilaki-ipa/api
+Environment=PATH=/opt/gilaki-ipa/.venv/bin
+EnvironmentFile=/opt/gilaki-ipa/api/.env
+ExecStart=/opt/gilaki-ipa/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 18741
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

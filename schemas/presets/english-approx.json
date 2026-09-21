@@ -1,0 +1,28 @@
+{
+  "id": "english-approx",
+  "name": "English approximate",
+  "description": "ASCII-friendly reading aid. Not a scholarly transcription.",
+  "script": "Latn",
+  "direction": "ltr",
+  "lossy": true,
+  "normalize": "NFC",
+  "separator": "",
+  "rules": [
+    { "ipa": "tʃ", "out": "ch" },
+    { "ipa": "dʒ", "out": "j" },
+    { "ipa": "ʃ", "out": "sh" },
+    { "ipa": "ʒ", "out": "zh" },
+    { "ipa": "iː", "out": "ee" },
+    { "ipa": "uː", "out": "oo" },
+    { "ipa": "ə", "out": "e" },
+    { "ipa": "ä", "out": "a" },
+    { "ipa": "ɒ", "out": "aa" },
+    { "ipa": "ɛ", "out": "e" },
+    { "ipa": "ü", "out": "u" },
+    { "ipa": "ɣ", "out": "gh" },
+    { "ipa": "x", "out": "kh" },
+    { "ipa": "ʔ", "out": "" },
+    { "ipa": "ŋ", "out": "ng" },
+    { "ipa": "j", "out": "y" }
+  ]
+}
