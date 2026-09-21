@@ -107,7 +107,7 @@ No dark theme in v1. Do not auto-follow system night mode (Perso-Arabic on dark 
 
 ## 3. Typography rules
 
-Load **Vazirmatn** (UI + Arabic transcript), **Source Serif 4** (Latin / academic mapped text), **Charis SIL** or Noto Sans (IPA). Self-host or Google Fonts. Android: Vazirmatn + a serif for Latin maps; IPA in a font with IPA coverage.
+Load **Vazirmatn** (UI + Arabic transcript), **Source Serif 4** (Latin / academic mapped text), **Charis SIL** or Noto Sans (IPA). Self-host or Google Fonts. Android v1 uses the system sans (Noto Arabic fallback) for UI and Arab maps and the system serif for Latin maps, with IPA in the same face; do not use Inter or Tahoma.
 
 | Role | Face | Size | Weight | Line height | Notes |
 |---|---|---|---|---|---|

@@ -4,7 +4,7 @@ Online transcriber for Gilaki (`glk`): speech → IPA → a user-chosen script.
 
 - **API** (`api/`): phone recognition, preset maps, phonology.
 - **Web** (`web/`): static client at `https://1404kingstreet.com/gilaki-app`.
-- **Android** (`android/`, later): `com.kingstreet.gilaki`.
+- **Android** (`android/`): `com.kingstreet.gilaki`. Caspian Paper Compose client; unit tests via `./gradlew :app:testDebugUnitTest`.
 
 Audio is processed in memory on the server and **not stored**. Custom maps stay on the device.
 
@@ -28,7 +28,7 @@ gilaki-ipa/
   api/                 FastAPI service
   schemas/             JSON Schema + preset maps
   web/                 Static web client
-  android/             Android app (later)
+  android/             Android app (`com.kingstreet.gilaki`)
   docs/                Plan, API, deploy
   deploy/              Nginx + systemd drafts
   .cursor/rules/       Rules for Cursor Agent
@@ -63,6 +63,12 @@ python3 -m http.server 4173 --bind 127.0.0.1 --directory web
 # in another shell: ./scripts/start-server.sh
 # open http://127.0.0.1:4173 and set API base to http://127.0.0.1:18741
 cd web && npm test && npx playwright test
+```
+
+Android unit tests (JDK 17+):
+
+```bash
+cd android && ./gradlew :app:testDebugUnitTest
 ```
 
 ## Privacy split

@@ -647,7 +647,7 @@ gilaki-ipa/
   scripts/start-server.sh     clone-and-run on Linux
   .github/workflows/ci.yml
   web/                        web client + Playwright
-  android/                    Android module (later)
+  android/                    Compose client `com.kingstreet.gilaki`
   deploy/nginx-gilaki.conf
   deploy/caddy-gilaki.Caddyfile
   deploy/gilaki-api.service

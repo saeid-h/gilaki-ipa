@@ -54,6 +54,7 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r api/requirements.txt
 cp api/.env.example api/.env
 cd api && pytest
+cd ../android && ./gradlew :app:testDebugUnitTest
 # Linux, from repo root:
 # ./scripts/start-server.sh
 ```
