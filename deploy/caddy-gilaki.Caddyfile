@@ -1,0 +1,43 @@
+# Merge into the existing {$DOMAIN:localhost} site in the
+# real-estate-investment Caddyfile. Keep /api/* and /health for that app.
+# Gilaki handles MUST sit above the final catch-all `handle { }`.
+#
+# On vm6506, Caddy uses network_mode: host so these loopback
+# addresses are the host, not the container.
+
+{$DOMAIN:localhost} {
+	@gilaki_api_root {
+		path /gilaki-api
+		not path /gilaki-api/*
+	}
+	redir @gilaki_api_root /gilaki-api/ 308
+
+	@gilaki_app_root {
+		path /gilaki-app
+		not path /gilaki-app/*
+	}
+	redir @gilaki_app_root /gilaki-app/ 308
+
+	handle /api/* {
+		reverse_proxy 127.0.0.1:8000
+	}
+
+	handle /health {
+		reverse_proxy 127.0.0.1:8000
+	}
+
+	handle_path /gilaki-api/* {
+		reverse_proxy 127.0.0.1:18741
+	}
+
+	handle_path /gilaki-app/* {
+		root * /srv/gilaki-web
+		file_server
+	}
+
+	handle {
+		root * /srv/frontend
+		try_files {path} /index.html
+		file_server
+	}
+}

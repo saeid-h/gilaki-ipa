@@ -1,16 +1,27 @@
 import json
+import shutil
 from pathlib import Path
 
 import jsonschema
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
+from tests.wavutil import pcm_wav
+
+needs_ffmpeg = pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="ffmpeg not installed")
 
 client = TestClient(app)
 
 ROOT = Path(__file__).resolve().parents[2]
 SCHEMA = json.loads((ROOT / "schemas" / "map.schema.json").read_text(encoding="utf-8"))
 PRESETS = ROOT / "schemas" / "presets"
+
+
+def test_root():
+    res = client.get("/")
+    assert res.status_code == 200
+    assert res.json()["service"] == "gilaki-ipa"
 
 
 def test_health():
@@ -63,14 +74,17 @@ def test_map_longest_match_varg():
     assert res.json()["mapped_text"] == "چٚ"
 
 
+@needs_ffmpeg
 def test_recognize_mock():
-    files = {"audio": ("clip.wav", b"RIFF....fake", "audio/wav")}
+    files = {"audio": ("clip.wav", pcm_wav(), "audio/wav")}
     res = client.post("/v1/recognize", files=files, data={"preset_id": "varg-perso-arabic"})
     assert res.status_code == 200
     body = res.json()
     assert body["backend"] == "mock"
     assert "ə" in body["ipa"]
     assert body["mapped_text"]
+    assert body["audio"]["sample_rate"] == 16000
+    assert body["audio"]["duration_sec"] > 0
 
 
 def test_recognize_empty_audio():
@@ -94,20 +108,28 @@ def test_rate_limit(monkeypatch):
     from app.settings import settings
 
     monkeypatch.setattr(settings, "rate_limit_max", 5)
-    files = {"audio": ("clip.wav", b"RIFF....fake", "audio/wav")}
     last = None
     for _ in range(6):
-        last = client.post("/v1/recognize", files=files)
+        last = client.post("/v1/map", json={"ipa": "m ə", "preset_id": "academic-latin"})
     assert last is not None
     assert last.status_code == 429
     assert last.json()["error"]["code"] == "rate_limited"
 
 
+@needs_ffmpeg
+def test_recognize_garbage_is_invalid_audio():
+    files = {"audio": ("clip.wav", b"not-audio", "audio/wav")}
+    res = client.post("/v1/recognize", files=files)
+    assert res.status_code == 422
+    assert res.json()["detail"]["error"]["code"] == "invalid_audio"
+
+
+@needs_ffmpeg
 def test_recognize_does_not_create_uploads():
     api_dir = Path(__file__).resolve().parents[1]
     uploads = api_dir / "uploads"
     existed = uploads.exists()
-    files = {"audio": ("clip.wav", b"RIFF....fake", "audio/wav")}
+    files = {"audio": ("clip.wav", pcm_wav(), "audio/wav")}
     res = client.post("/v1/recognize", files=files)
     assert res.status_code == 200
     if not existed:

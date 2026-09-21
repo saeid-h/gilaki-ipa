@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from .asr import get_backend
+from .audio import AudioPrepError, prepare_audio
 from .catalog import get_preset, list_preset_summaries, load_inventory
 from .ratelimit import allow
 from .rewriter import apply_map
@@ -63,6 +64,16 @@ class MapResponse(BaseModel):
     ipa: str
     mapped_text: str
     map_used: str | None = None
+
+
+@app.get("/")
+def root() -> dict:
+    return {
+        "ok": True,
+        "service": "gilaki-ipa",
+        "health": "/health",
+        "docs": "/docs",
+    }
 
 
 @app.get("/health")
@@ -128,9 +139,14 @@ async def recognize(
     if not blob:
         raise _error(422, "empty_audio")
 
+    try:
+        prepared = prepare_audio(blob, settings.max_duration_sec)
+    except AudioPrepError as exc:
+        raise _error(exc.status, exc.code, exc.message) from exc
+
     backend = get_backend(settings.asr_backend)
     try:
-        result = backend.recognize(blob, dialect=dialect)
+        result = backend.recognize(prepared.wav_bytes, dialect=dialect)
     except Exception as exc:  # noqa: BLE001 — surface backend install errors cleanly
         raise _error(501, "backend_unavailable", str(exc)) from exc
 
@@ -150,8 +166,8 @@ async def recognize(
         "ok": True,
         "request_id": uuid.uuid4().hex,
         "audio": {
-            "duration_sec": result.duration_sec,
-            "sample_rate": result.sample_rate,
+            "duration_sec": prepared.duration_sec,
+            "sample_rate": prepared.sample_rate,
             "filename": audio.filename,
         },
         "ipa": result.ipa_string,

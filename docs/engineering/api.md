@@ -17,6 +17,14 @@ None in v1. If `API_KEY` is empty, auth middleware is off. Do not add an API key
 
 ## Endpoints
 
+### `GET /`
+
+JSON index so a stripped prefix `/gilaki-api/` is not a 404.
+
+```json
+{ "ok": true, "service": "gilaki-ipa", "health": "/health", "docs": "/docs" }
+```
+
 ### `GET /health`
 
 ```json

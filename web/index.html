@@ -56,7 +56,7 @@
 
   <script>
     const $ = (id) => document.getElementById(id);
-    $("base").value = localStorage.getItem("apiBase") || "http://127.0.0.1:8080";
+    $("base").value = localStorage.getItem("apiBase") || "https://1404kingstreet.com/gilaki-api";
     $("key").value = localStorage.getItem("apiKey") || "";
     $("custom").value = localStorage.getItem("customMap") || JSON.stringify({
       id: "my-map", name: "My map", script: "Latn", direction: "ltr",

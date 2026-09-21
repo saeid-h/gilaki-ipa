@@ -11,7 +11,7 @@ If you add or rename a doc, update the table in the same change. Put the file in
 | [`product/plan.md`](product/plan.md) | Humans + agents | Product, privacy split, locked §3, phases, tests. **Source of truth.** |
 | [`product/design.md`](product/design.md) | Agents building UI | Caspian Paper tokens, type, screens. Look and feel only. |
 | [`engineering/api.md`](engineering/api.md) | Clients + API work | HTTP contract. Must match FastAPI routes. |
-| [`engineering/deploy.md`](engineering/deploy.md) | Operator on Linux | Clone, `scripts/start-server.sh`, venv, Nginx. |
+| [`engineering/deploy.md`](engineering/deploy.md) | Operator on Linux | Clone, `scripts/start-server.sh`, venv, Caddy/Nginx |
 | [`engineering/android.md`](engineering/android.md) | Android work | applicationId, storage, screens, HTTPS. |
 | [`agents/cursor.md`](agents/cursor.md) | Agents | Prompt pack, one phase per chat. |
 | [`PROJECT_PLAN.md`](PROJECT_PLAN.md) | Old Cursor rule path | Pointer to `product/plan.md` only. |

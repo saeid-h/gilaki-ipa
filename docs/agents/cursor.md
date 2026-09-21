@@ -7,7 +7,7 @@ Locked decisions:
 - Public API: `https://1404kingstreet.com/gilaki-api`
 - Public app: `https://1404kingstreet.com/gilaki-app`
 - Internal bind: `127.0.0.1:18741`
-- TLS via existing Nginx on 443. Do not expose 18741.
+- TLS via existing Caddy on 443 (this host). Do not expose 18741.
 - No API key, no accounts in v1. Keep size + in-memory rate limits.
 - Android applicationId: `com.kingstreet.gilaki`
 - Audio and custom maps stay on device.

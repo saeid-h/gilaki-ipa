@@ -2,7 +2,7 @@
 
 Source of truth for Cursor Plan mode. Implement only after this document is accepted. One implementation phase per chat.
 
-Status: plan frozen 2026-09-21. Not deployed. Grok scaffold files in the repo are a suggested layout, not a shipped product.
+Status: plan frozen 2026-09-21. Phase 3 public HTTPS is live (`/gilaki-api`, `/gilaki-app` on Caddy).
 
 ---
 
@@ -94,7 +94,7 @@ These are closed unless a later plan revision explicitly changes them.
 | Public API URL | `https://1404kingstreet.com/gilaki-api` |
 | Public app URL | `https://1404kingstreet.com/gilaki-app` |
 | Internal process bind | `127.0.0.1:18741` |
-| Public TLS | Existing Nginx certificate on port **443** |
+| Public TLS | Existing **443** terminator (this host: Caddy in Docker `real-estate-investment-caddy-1`, not Nginx) |
 | Unique port on the internet | **No.** 18741 stays localhost only |
 | Domain risk | Domain may not be renewed. Clients must have an editable API base URL. Next app version can change the default. |
 | Auth / API key | **None in v1** (free service) |
@@ -135,9 +135,9 @@ These are closed unless a later plan revision explicitly changes them.
         │  HTTPS  API base: https://1404kingstreet.com/gilaki-api
         └───────────────┬───────────────────┘
                         │
-              Nginx :443  (existing site + cert)
-              location /gilaki-api/  →  proxy_pass http://127.0.0.1:18741/
-              location /gilaki-app/  →  static files (web/)
+              Caddy :443  (Docker, network_mode: host)
+              handle_path /gilaki-api/*  →  127.0.0.1:18741
+              handle_path /gilaki-app/*  →  static files (web/)
                         │
               FastAPI (Uvicorn) 127.0.0.1:18741
                         │
@@ -149,7 +149,7 @@ These are closed unless a later plan revision explicitly changes them.
 
 Same host, two paths: the browser origin is `https://1404kingstreet.com` for both, so CORS is that origin.
 
-Path prefix: Nginx `location /gilaki-api/` with `proxy_pass http://127.0.0.1:18741/;` (trailing slashes matter). FastAPI routes stay `/health`, `/v1/recognize`, not `/gilaki-api/health`.
+Path prefix: Caddy `handle_path /gilaki-api/*` strips the prefix (Nginx equivalent: `location /gilaki-api/` with `proxy_pass http://127.0.0.1:18741/;`). Bare `/gilaki-api` must 308/301 to `/gilaki-api/`, or the other site on this host will serve it. FastAPI routes stay `/health`, `/v1/recognize`, not `/gilaki-api/health`.
 
 Clients store API base URL **without a trailing slash**:
 
@@ -435,8 +435,8 @@ Idempotent: a second run reuses the existing venv. Never `sudo pip`, never `--br
 
 ffmpeg is an OS package (`apt install ffmpeg`), not a venv package.
 
-Nginx snippets: `deploy/nginx-gilaki.conf`.  
-Optional systemd: `deploy/gilaki-api.service` should `ExecStart=` that same script (or the venv uvicorn) so reboot survives. Path `/opt/gilaki-ipa` is only a suggestion; clone wherever you like and point Nginx `alias` at `web/`.
+Reverse proxy: this host uses Caddy (`deploy/caddy-gilaki.Caddyfile`). Nginx snippet: `deploy/nginx-gilaki.conf` (other machines).
+Optional systemd: `deploy/gilaki-api.service` should `ExecStart=` that same script (or the venv uvicorn) so reboot survives. Path `/opt/gilaki-ipa` is only a suggestion; clone wherever you like and point the static alias at `web/`.
 
 Checks after deploy:
 
@@ -486,7 +486,7 @@ Done when this document matches the locked table in §3 and sibling docs do not 
 ### Phase 3 — public HTTPS paths
 
 - Operator clones `https://github.com/saeid-h/gilaki-ipa` on the Linux host and runs `./scripts/start-server.sh`
-- Operator pastes both Nginx locations into the existing `1404kingstreet.com` server block (`alias` → this clone’s `web/`)
+- Merge [`deploy/caddy-gilaki.Caddyfile`](../../deploy/caddy-gilaki.Caddyfile) into the existing `1404kingstreet.com` Caddy site (this host). Hosts that terminate TLS with Nginx use [`deploy/nginx-gilaki.conf`](../../deploy/nginx-gilaki.conf) instead
 - Optional systemd calling the same script
 - `curl https://1404kingstreet.com/gilaki-api/health` succeeds
 - Static app reachable at `https://1404kingstreet.com/gilaki-app/`
