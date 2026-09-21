@@ -405,7 +405,7 @@ BIND_HOST=127.0.0.1
 BIND_PORT=18741
 MAX_UPLOAD_MB=12
 MAX_DURATION_SEC=60
-CORS_ORIGINS=https://1404kingstreet.com,http://127.0.0.1:18741,http://localhost:18741
+CORS_ORIGINS=https://1404kingstreet.com,http://127.0.0.1:18741,http://localhost:18741,http://127.0.0.1:4173,http://localhost:4173
 PRESETS_DIR=../schemas/presets
 INVENTORY_PATH=../schemas/gilaki_inventory.json
 ALLOSAURUS_LANG=ipa
@@ -644,9 +644,11 @@ gilaki-ipa/
   api/                        FastAPI (`api/.env` gitignored)
   .venv/                      project Python env (gitignored; created by start script)
   scripts/start-server.sh     clone-and-run on Linux
-  web/                        web client
+  .github/workflows/ci.yml
+  web/                        web client + Playwright
   android/                    Android module (later)
   deploy/nginx-gilaki.conf
+  deploy/caddy-gilaki.Caddyfile
   deploy/gilaki-api.service
   .cursor/rules/gilaki-ipa.mdc
   .cursor/rules/docs.mdc

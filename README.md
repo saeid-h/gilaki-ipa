@@ -56,6 +56,15 @@ cd api && uvicorn app.main:app --host 127.0.0.1 --port 18741 --reload
 
 Open `http://127.0.0.1:18741/docs`. Default `ASR_BACKEND=mock`.
 
+Web client (zero-build): serve `web/` and point Settings at the local API.
+
+```bash
+python3 -m http.server 4173 --bind 127.0.0.1 --directory web
+# in another shell: ./scripts/start-server.sh
+# open http://127.0.0.1:4173 and set API base to http://127.0.0.1:18741
+cd web && npm test && npx playwright test
+```
+
 ## Privacy split
 
 | Data | Where it lives |

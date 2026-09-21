@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     max_duration_sec: int = 60
     rate_limit_max: int = 30
     rate_limit_window_sec: int = 600
-    cors_origins: str = "https://1404kingstreet.com,http://127.0.0.1:18741,http://localhost:18741"
+    cors_origins: str = "https://1404kingstreet.com,http://127.0.0.1:18741,http://localhost:18741,http://127.0.0.1:4173,http://localhost:4173"
     presets_dir: str = "../schemas/presets"
     inventory_path: str = "../schemas/gilaki_inventory.json"
     allosaurus_lang: str = "ipa"

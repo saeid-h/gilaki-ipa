@@ -41,7 +41,7 @@ List of standard maps stored on the server.
 
 ### `GET /v1/presets/{id}`
 
-One map document (same shape as `schemas/map.schema.json`).
+`{ "ok": true, "preset": { ... } }` — the inner object matches `schemas/map.schema.json`.
 
 ### `POST /v1/recognize`
 

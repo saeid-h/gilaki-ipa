@@ -3,124 +3,262 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Gilaki IPA workbench</title>
+  <title>Gilaki</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&family=Vazirmatn:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
-    :root { font-family: system-ui, sans-serif; color: #102017; background: #f4f1ea; }
-    body { max-width: 880px; margin: 2rem auto; padding: 0 1rem; }
-    label, button { display: block; margin: .6rem 0; }
-    input[type=text] { width: 100%; padding: .45rem; }
-    textarea { width: 100%; min-height: 6rem; }
-    .rtl { direction: rtl; font-size: 1.4rem; }
-    .card { background: #fff; padding: 1rem; border-radius: 12px; margin: 1rem 0; }
-    .row { display: flex; gap: 1rem; flex-wrap: wrap; }
-    .muted { color: #5b645c; }
+    :root {
+      --canvas: #F4F0E6;
+      --surface: #FBF8F1;
+      --paper: #FFFCF6;
+      --hairline: #E4DDD0;
+      --hairline-strong: #C9C0B0;
+      --ink: #1C1914;
+      --ink-muted: #5C574E;
+      --ink-faint: #8A8478;
+      --ipa: #6B6560;
+      --primary: #1A6B62;
+      --primary-pressed: #14564F;
+      --primary-soft: #D7EBE7;
+      --on-primary: #FBF8F1;
+      --clay: #C45C26;
+      --clay-soft: #F6E4D6;
+      --danger: #B42318;
+      --ui: Vazirmatn, "Noto Sans", system-ui, sans-serif;
+      --arab: Vazirmatn, "Noto Sans Arabic", sans-serif;
+      --latn: "Source Serif 4", "Noto Serif", Georgia, serif;
+      --ipa-face: "Noto Sans", "Charis SIL", "Doulos SIL", serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font-family: var(--ui);
+      background: var(--canvas);
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .wrap { max-width: 40rem; margin: 0 auto; padding: 16px; }
+    header.top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0 16px;
+    }
+    header.top h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    nav { display: flex; gap: 8px; }
+    .ghost, .chip, button.primary, .file-btn {
+      font-family: var(--ui);
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    .ghost {
+      background: transparent;
+      border: 0;
+      color: var(--ink);
+      min-height: 44px;
+      padding: 8px 12px;
+    }
+    .lede { color: var(--ink-muted); margin: 0 0 32px; }
+    .record-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 48px 0 32px;
+    }
+    #recordBtn {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 0;
+      background: var(--primary);
+      color: var(--on-primary);
+      font-size: 14px;
+      font-weight: 500;
+      font-family: var(--ui);
+    }
+    #recordBtn.recording {
+      background: var(--primary-pressed);
+      animation: pulse 900ms ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+    .file-btn {
+      background: transparent;
+      border: 0;
+      color: var(--ink-muted);
+      min-height: 44px;
+    }
+    #file { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    #status { color: var(--ink-faint); font-size: 13px; font-weight: 500; }
+    #status[data-kind="error"] { color: var(--danger); }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 16px; }
+    .chip {
+      height: 36px;
+      padding: 0 14px;
+      border: 1px solid var(--hairline);
+      background: var(--canvas);
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .chip.selected {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-color: transparent;
+    }
+    .lossy-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--clay);
+      display: inline-block;
+    }
+    .banner {
+      background: var(--clay-soft);
+      color: var(--clay);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+    .paper {
+      background: var(--paper);
+      border: 1px solid var(--hairline);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 1px 2px rgba(28,25,20,0.06), 0 8px 24px rgba(28,25,20,0.04);
+    }
+    .paper.arab #mapped {
+      font-family: var(--arab);
+      font-size: 32px;
+      font-weight: 500;
+      line-height: 1.7;
+      text-align: start;
+    }
+    .paper.latn #mapped {
+      font-family: var(--latn);
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1.55;
+    }
+    #mapped { margin: 0; color: var(--ink); }
+    #ipa {
+      margin: 16px 0 0;
+      font-family: var(--ipa-face);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--ipa);
+    }
+    label.field, .hint { display: block; margin: 12px 0; color: var(--ink-muted); font-size: 13px; font-weight: 500; }
+    input[type="text"], textarea, .lang-row {
+      width: 100%;
+      font-family: var(--ui);
+      font-size: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--hairline);
+      background: var(--canvas);
+      color: var(--ink);
+      padding: 12px;
+    }
+    input[type="text"]:focus, textarea:focus {
+      outline: 2px solid var(--primary);
+      border-color: var(--hairline-strong);
+    }
+    textarea {
+      min-height: 12rem;
+      font-family: ui-monospace, "JetBrains Mono", monospace;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .lang-row { display: flex; gap: 16px; align-items: center; }
+    .lang-row label { font-size: 16px; font-weight: 400; color: var(--ink); }
+    button.primary {
+      background: var(--primary);
+      color: var(--on-primary);
+      border: 0;
+      min-height: 44px;
+      padding: 8px 16px;
+      margin-top: 8px;
+    }
+    .check { display: flex; gap: 8px; align-items: flex-start; margin: 16px 0; color: var(--ink); }
+    [hidden] { display: none !important; }
+    @media (max-width: 479px) {
+      #recordBtn { width: 72px; height: 72px; }
+      .paper.arab #mapped { font-size: 28px; }
+    }
   </style>
 </head>
 <body>
-  <h1>Gilaki IPA workbench</h1>
-  <p class="muted">Audio and custom maps stay in this browser. The server only sees audio during recognition.</p>
+  <div class="wrap">
+    <header class="top">
+      <h1 data-i18n="title">Gilaki</h1>
+      <nav>
+        <button class="ghost" id="openMaps" type="button" data-i18n="maps">Maps</button>
+        <button class="ghost" id="openSettings" type="button" data-i18n="settings">Settings</button>
+      </nav>
+    </header>
 
-  <div class="card">
-    <label>API base URL
-      <input id="base" type="text" placeholder="http://127.0.0.1:8080" />
-    </label>
-    <label>API key (optional)
-      <input id="key" type="text" />
-    </label>
-    <button id="ping">Check server</button>
-    <div id="health" class="muted"></div>
+    <section data-screen="record">
+      <p class="lede" data-i18n="subtitle">Speech to writing. Audio stays in this browser.</p>
+      <div class="record-block">
+        <button id="recordBtn" type="button" data-i18n="record">Record</button>
+        <label class="file-btn">
+          <span data-i18n="chooseFile">Choose file</span>
+          <input id="file" data-testid="file" type="file" accept="audio/*" />
+        </label>
+        <div id="status" data-kind="ready">Ready</div>
+      </div>
+    </section>
+
+    <section data-screen="result" hidden>
+      <div id="chips" class="chips"></div>
+      <div id="lossy" class="banner" hidden data-i18n="lossy">This map collapses Gilaki vowels.</div>
+      <article id="transcript" class="paper arab">
+        <p id="mapped" data-testid="mapped"></p>
+        <p id="ipa" data-testid="ipa" hidden></p>
+      </article>
+      <button class="ghost" id="showIpa" type="button" data-testid="show-ipa" data-i18n="showSounds">Show sounds</button>
+    </section>
+
+    <section data-screen="maps" hidden>
+      <button class="ghost" type="button" data-back data-i18n="back">Back</button>
+      <label class="field" data-i18n="customMap">Custom map (this device only)</label>
+      <p class="hint" data-i18n="customHint">JSON is saved in this browser, not on the server.</p>
+      <textarea id="customJson" spellcheck="false"></textarea>
+      <label class="check">
+        <input id="applyServer" type="checkbox" />
+        <span data-i18n="applyServer">Apply this custom map on the server for the next upload</span>
+      </label>
+      <button class="primary" id="saveMap" type="button" data-i18n="saveMap">Save map</button>
+    </section>
+
+    <section data-screen="settings" hidden>
+      <button class="ghost" type="button" data-back data-i18n="back">Back</button>
+      <label class="field" for="apiBase" data-i18n="apiBase">API base URL</label>
+      <input id="apiBase" data-testid="api-base" type="text" />
+      <label class="field" data-i18n="language">Interface language</label>
+      <div class="lang-row">
+        <label><input id="langEn" type="radio" name="lang" value="en" /> <span data-i18n="english">English</span></label>
+        <label><input id="langFa" type="radio" name="lang" value="fa" /> <span data-i18n="persian">Persian</span></label>
+      </div>
+      <button class="primary" id="saveSettings" type="button" data-i18n="saveSettings">Save</button>
+    </section>
   </div>
-
-  <div class="card">
-    <label>Audio file <input id="file" type="file" accept="audio/*" /></label>
-    <label>Preset
-      <select id="preset"></select>
-    </label>
-    <button id="send">Recognize</button>
-  </div>
-
-  <div class="card">
-    <h2>IPA</h2>
-    <textarea id="ipa" readonly></textarea>
-    <h2>Mapped</h2>
-    <textarea id="mapped" class="rtl" readonly></textarea>
-  </div>
-
-  <div class="card">
-    <h2>Custom map (local only)</h2>
-    <p class="muted">JSON is saved to localStorage, not the server.</p>
-    <textarea id="custom"></textarea>
-    <button id="saveMap">Save custom map locally</button>
-    <button id="applyLocal">Apply custom map to current IPA</button>
-  </div>
-
-  <script>
-    const $ = (id) => document.getElementById(id);
-    $("base").value = localStorage.getItem("apiBase") || "https://1404kingstreet.com/gilaki-api";
-    $("key").value = localStorage.getItem("apiKey") || "";
-    $("custom").value = localStorage.getItem("customMap") || JSON.stringify({
-      id: "my-map", name: "My map", script: "Latn", direction: "ltr",
-      rules: [{ipa:"ə", out:"e"}, {ipa:"ʃ", out:"sh"}]
-    }, null, 2);
-
-    function headers() {
-      const h = {};
-      if ($("key").value) h["x-api-key"] = $("key").value;
-      return h;
-    }
-
-    async function loadPresets() {
-      const res = await fetch($("base").value + "/v1/presets", { headers: headers() });
-      const data = await res.json();
-      $("preset").innerHTML = `<option value="">IPA only</option>` +
-        (data.presets || []).map(p => `<option value="${p.id}">${p.name}</option>`).join("");
-    }
-
-    $("ping").onclick = async () => {
-      localStorage.setItem("apiBase", $("base").value);
-      localStorage.setItem("apiKey", $("key").value);
-      try {
-        const res = await fetch($("base").value + "/health");
-        const data = await res.json();
-        $("health").textContent = JSON.stringify(data);
-        await loadPresets();
-      } catch (err) {
-        $("health").textContent = String(err);
-      }
-    };
-
-    $("send").onclick = async () => {
-      const file = $("file").files[0];
-      if (!file) { alert("Choose an audio file"); return; }
-      const body = new FormData();
-      body.append("audio", file);
-      if ($("preset").value) body.append("preset_id", $("preset").value);
-      const res = await fetch($("base").value + "/v1/recognize", {
-        method: "POST", headers: headers(), body
-      });
-      const data = await res.json();
-      $("ipa").value = data.ipa || JSON.stringify(data, null, 2);
-      $("mapped").value = data.mapped_text || "";
-      $("mapped").className = ($("preset").value.includes("persian") || $("preset").value.includes("varg")) ? "rtl" : "";
-    };
-
-    $("saveMap").onclick = () => {
-      JSON.parse($("custom").value);
-      localStorage.setItem("customMap", $("custom").value);
-      alert("Saved in this browser only");
-    };
-
-    $("applyLocal").onclick = async () => {
-      const res = await fetch($("base").value + "/v1/map", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...headers() },
-        body: JSON.stringify({ ipa: $("ipa").value, map: JSON.parse($("custom").value) })
-      });
-      const data = await res.json();
-      $("mapped").value = data.mapped_text || JSON.stringify(data, null, 2);
-    };
-
-    $("ping").click();
-  </script>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
