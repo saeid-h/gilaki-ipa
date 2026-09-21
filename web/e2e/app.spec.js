@@ -51,6 +51,10 @@ test("file upload shows mapped headline, optional IPA, remap, lossy, RTL", async
   await expect(page.locator("#lossy")).toBeVisible();
   await expect(mapped).not.toContainText("ə");
   await expect(mapped).not.toContainText("ٚ");
+
+  await expect(page.getByRole("button", { name: "Record" })).toBeVisible();
+  await page.getByTestId("file").setInputFiles(clip);
+  await expect(mapped).toHaveText("ماشانآ", { timeout: 20000 });
 });
 
 test("settings URL field is the public default before init override", async ({ page }) => {

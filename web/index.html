@@ -76,6 +76,12 @@
       gap: 16px;
       padding: 48px 0 32px;
     }
+    body:has([data-screen="result"]:not([hidden])) .record-block {
+      padding: 8px 0 24px;
+    }
+    body:has([data-screen="result"]:not([hidden])) .lede {
+      display: none;
+    }
     #recordBtn {
       width: 80px;
       height: 80px;
@@ -259,6 +265,6 @@
       <button class="primary" id="saveSettings" type="button" data-i18n="saveSettings">Save</button>
     </section>
   </div>
-  <script type="module" src="./app.js"></script>
+  <script type="module" src="./app.js?v=3"></script>
 </body>
 </html>

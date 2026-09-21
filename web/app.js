@@ -91,11 +91,18 @@ function applyChrome() {
 }
 
 function showView(name) {
-  state.view = name;
+  const overlay = name === "maps" || name === "settings";
+  state.view = overlay ? name : "main";
   document.querySelectorAll("[data-screen]").forEach((node) => {
-    node.hidden = node.dataset.screen !== name;
+    const screen = node.dataset.screen;
+    if (screen === "record") {
+      node.hidden = overlay;
+    } else if (screen === "result") {
+      node.hidden = overlay || !state.ipa;
+    } else {
+      node.hidden = screen !== name;
+    }
   });
-  if (name === "result") renderResult();
 }
 
 function renderChips() {
@@ -140,7 +147,7 @@ function renderResult() {
   $("ipa").hidden = !state.showIpa;
   $("showIpa").textContent = state.showIpa ? t("hideSounds") : t("showSounds");
   $("lossy").hidden = !map.lossy;
-  if (state.ipa) showView("result");
+  showView("main");
 }
 
 async function api(path, options = {}) {
@@ -189,6 +196,9 @@ async function recognize(blob, filename) {
   state.ipa = data.ipa || "";
   localStorage.setItem(KEYS.lastIpa, state.ipa);
   setStatus("ready");
+  if (data.backend) {
+    $("status").textContent = `${t("ready")} · ${data.backend}`;
+  }
   renderChips();
   renderResult();
 }
@@ -199,6 +209,8 @@ async function onFile(file) {
     await recognize(file, file.name);
   } catch (err) {
     setStatus("error", String(err.message || err));
+  } finally {
+    $("file").value = "";
   }
 }
 
@@ -250,7 +262,7 @@ function bind() {
   $("openMaps").addEventListener("click", () => showView("maps"));
   $("openSettings").addEventListener("click", () => showView("settings"));
   document.querySelectorAll("[data-back]").forEach((btn) => {
-    btn.addEventListener("click", () => showView(state.ipa ? "result" : "record"));
+    btn.addEventListener("click", () => showView("main"));
   });
   $("saveMap").addEventListener("click", () => {
     JSON.parse($("customJson").value);
@@ -268,7 +280,7 @@ function bind() {
     try {
       await loadPresets();
       setStatus("ready");
-      showView(state.ipa ? "result" : "record");
+      showView("main");
     } catch (err) {
       setStatus("error", String(err.message || err));
     }
@@ -297,11 +309,13 @@ function boot() {
   $("apiBase").value = state.base;
   bind();
   applyChrome();
-  showView("record");
+  showView("main");
   loadPresets()
     .then(() => {
       setStatus("ready");
+      renderChips();
       if (state.ipa) renderResult();
+      else showView("main");
     })
     .catch((err) => setStatus("error", String(err.message || err)));
 }
