@@ -40,5 +40,9 @@ if [[ ! -f "$ROOT/api/.env" ]]; then
   cp "$ROOT/api/.env.example" "$ROOT/api/.env"
 fi
 
+if grep -Eq '^ASR_BACKEND=allosaurus[[:space:]]*$' "$ROOT/api/.env"; then
+  "$VENV/bin/pip" install -q -r "$ROOT/api/requirements-allosaurus.txt"
+fi
+
 cd "$ROOT/api"
 exec "$VENV/bin/uvicorn" app.main:app --host 127.0.0.1 --port 18741

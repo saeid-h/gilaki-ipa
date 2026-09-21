@@ -642,6 +642,7 @@ gilaki-ipa/
   schemas/gilaki_inventory.json
   schemas/presets/*.json
   api/                        FastAPI (`api/.env` gitignored)
+  api/requirements-allosaurus.txt  optional GPL runtime, not in the APK
   .venv/                      project Python env (gitignored; created by start script)
   scripts/start-server.sh     clone-and-run on Linux
   .github/workflows/ci.yml

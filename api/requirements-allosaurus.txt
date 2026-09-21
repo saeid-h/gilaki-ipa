@@ -1,0 +1,6 @@
+# Optional. GPL-3.0. Install only in the repo-root .venv, never in an APK.
+# CPU torch first (this host has no GPU). A default `pip install torch`
+# pulls the CUDA wheel (~550 MB) and will OOM a 1 GB VM.
+#   .venv/bin/pip install torch --index-url https://download.pytorch.org/whl/cpu
+#   .venv/bin/pip install -r api/requirements-allosaurus.txt
+allosaurus>=1.0.2

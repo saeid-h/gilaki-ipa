@@ -31,6 +31,8 @@ JSON index so a stripped prefix `/gilaki-api/` is not a 404.
 { "ok": true, "status": "up", "backend": "mock", "version": "0.1.0" }
 ```
 
+`backend` is `mock` or `allosaurus` (whatever `ASR_BACKEND` is).
+
 ### `GET /v1/phonology`
 
 Gilaki inventory used to constrain / validate phones.
@@ -73,6 +75,8 @@ JSON response:
   "backend": "mock"
 }
 ```
+
+`backend` follows `ASR_BACKEND`. Clients map IPA locally; they do not need to special-case Allosaurus.
 
 `phones[].start/end` may be null if the backend has no alignment.
 

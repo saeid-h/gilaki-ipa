@@ -20,11 +20,21 @@ cd gilaki-ipa
 ./scripts/start-server.sh
 ```
 
-The script creates `.venv` at the **repository root** if needed, installs `api/requirements.txt` into it, and runs uvicorn on `127.0.0.1:18741`.
+The script creates `.venv` at the **repository root** if needed, installs `api/requirements.txt` into it, and runs uvicorn on `127.0.0.1:18741`. If `api/.env` has `ASR_BACKEND=allosaurus`, it also installs `api/requirements-allosaurus.txt` (GPL, server-only).
 
 `ffmpeg` must be on PATH (`apt install ffmpeg` / `brew install ffmpeg`). Uploads are converted to 16 kHz mono WAV in a temp file that is always deleted. Missing ffmpeg → 501 `backend_unavailable`; unreadable audio → 422 `invalid_audio`; longer than 60 s → 422 `audio_too_long`.
 
 Optional systemd: `deploy/gilaki-api.service` should start that same script so the process survives reboot. Clone path is yours; `/opt/gilaki-ipa` is only an example.
+
+## Allosaurus (this 1 GB host)
+
+Keep `ASR_BACKEND=mock` for Playwright and local UI work. On the public VM set `ASR_BACKEND=allosaurus` in `api/.env`.
+
+This box has ~1 GB RAM and no swap. Add a 2 GB swap file **before** `pip install allosaurus` / first model load, or the process will OOM and take the other site down with it.
+
+Install **CPU** torch (`pip install torch --index-url https://download.pytorch.org/whl/cpu`) then `api/requirements-allosaurus.txt`. A default torch wheel is CUDA and ~550 MB. `python3.13-dev` is needed to build `editdistance`. `ffmpeg` is required (`apt install ffmpeg`).
+
+First `read_recognizer()` downloads weights (outbound HTTPS, no Hugging Face token). Mock stays in the same binary: change the env var and restart.
 
 ## Reverse proxy (this host: Caddy in Docker)
 
