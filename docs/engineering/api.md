@@ -78,6 +78,8 @@ JSON response:
 
 `backend` follows `ASR_BACKEND`. Clients map IPA locally; they do not need to special-case Allosaurus.
 
+Allosaurus decoding is constrained to the Gilaki inventory (`ALLOSAURUS_LANG=glk` or `ipa`). The library’s unconstrained `ipa` set (~230 phones) is only used when `ALLOSAURUS_LANG=all`.
+
 `phones[].start/end` may be null if the backend has no alignment.
 
 Limits: 12 MB → 413; duration > 60 s → 422 `audio_too_long`; empty → 422 `empty_audio`; 30 req / IP / 10 min → 429.

@@ -19,7 +19,10 @@
     "ɾ": "r",
     "æ": "ä",
     "ɑ": "ɒ",
-    "y": "ü"
+    "y": "ü",
+    "ɡ": "g",
+    "t͡ʃ": "tʃ",
+    "d͡ʒ": "dʒ"
   },
   "notes": [
     "Broad phonemic inventory for mapping, not narrow phonetic detail.",

@@ -36,6 +36,8 @@ Install **CPU** torch (`pip install torch --index-url https://download.pytorch.o
 
 First `read_recognizer()` downloads weights (outbound HTTPS, no Hugging Face token). Mock stays in the same binary: change the env var and restart.
 
+Leave `ALLOSAURUS_LANG=glk` (or `ipa`) so decoding uses the Gilaki inventory file. `ALLOSAURUS_LANG=all` restores the ~230-phone dump and the transcript will jump between similar world phones.
+
 ## Reverse proxy (this host: Caddy in Docker)
 
 Uvicorn stays on `127.0.0.1:18741`. Port 443 is `real-estate-investment-caddy-1`. A bridge-network Caddy cannot reach that loopback bind (`host.docker.internal` is the docker0 gateway, not `127.0.0.1`, and UFW drops it). On this VM Caddy runs with **`network_mode: host`** so `reverse_proxy 127.0.0.1:18741` is the host uvicorn. The analyzer backend is published on host `8000`, so `/api/*` and `/health` use `127.0.0.1:8000` as well.

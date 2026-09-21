@@ -408,8 +408,10 @@ MAX_DURATION_SEC=60
 CORS_ORIGINS=https://1404kingstreet.com,http://127.0.0.1:18741,http://localhost:18741,http://127.0.0.1:4173,http://localhost:4173
 PRESETS_DIR=../schemas/presets
 INVENTORY_PATH=../schemas/gilaki_inventory.json
-ALLOSAURUS_LANG=ipa
+ALLOSAURUS_LANG=glk
 ```
+
+`ALLOSAURUS_LANG=ipa` or `glk` constrains Allosaurus to `schemas/gilaki_inventory.json` (a phone-list file passed as `lang_id`). The library `ipa` inventory is ~230 phones and jumps between similar world symbols. Use `ALLOSAURUS_LANG=all` only to debug unconstrained decoding.
 
 `API_KEY` stays empty in v1. Local API listen: `127.0.0.1:18741` (not 8080, not `0.0.0.0` on the public host).
 
@@ -597,6 +599,7 @@ Playwright talks to mock only. It is not a real-speech quality test.
 - `ASR_BACKEND=mock` suite still green
 - Allosaurus tests skip cleanly if the model is not installed
 - When installed: phones pass alias normalize (`š` → `ʃ`, etc.); unknown symbols do not crash the rewriter
+- Default Allosaurus `lang_id` is the Gilaki inventory file, not the 230-phone `ipa` dump
 
 ### 12.7 Phase 7 — quality
 
