@@ -611,6 +611,7 @@ Playwright talks to mock only. It is not a real-speech quality test.
 - Correcting IPA on the client remaps without a second upload
 - `scripts/score-per.py <folder>` scores PER when `*.wav` + `*.ipa.txt` + `*.hyp.txt` triples exist; empty folder is a no-op
 - Score **PER** on 20–50 local Gilaki clips. Judge maps by “a speaker can read it back.”
+- `scripts/dolma-eval.py` scores preset maps against the public DOLMA Gilaki test sentences (Arabic-script spelling, not IPA). Audio stays in gitignored `data/dolma/`. The dataset card states no license, so clips are not committed and are not stored on the API host. The picked map is the lowest character error rate after diacritics are stripped.
 
 ---
 
