@@ -45,7 +45,8 @@ def test_presets():
     assert res.status_code == 200
     ids = {row["id"] for row in res.json()["presets"]}
     assert "varg-perso-arabic" in ids
-    assert len(ids) >= 4
+    assert "ipa" in ids
+    assert len(ids) >= 5
 
 
 def test_presets_match_schema():
@@ -66,6 +67,12 @@ def test_map_preset_keeps_schwa():
     res = client.post("/v1/map", json={"ipa": "m ə ʃ ə n ɒ", "preset_id": "academic-latin"})
     assert res.status_code == 200
     assert "ə" in res.json()["mapped_text"]
+
+
+def test_ipa_preset_keeps_phones():
+    res = client.post("/v1/map", json={"ipa": "m ə ʃ ə n ɒ", "preset_id": "ipa"})
+    assert res.status_code == 200
+    assert res.json()["mapped_text"] == "m ə ʃ ə n ɒ"
 
 
 def test_map_longest_match_varg():

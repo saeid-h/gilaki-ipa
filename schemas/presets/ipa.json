@@ -1,0 +1,13 @@
+{
+  "id": "ipa",
+  "name": "IPA",
+  "description": "Broad phonemic IPA. Phones are shown as-is, space-separated.",
+  "script": "Zyyy",
+  "direction": "ltr",
+  "lossy": false,
+  "normalize": "NFC",
+  "separator": " ",
+  "rules": [
+    { "ipa": "ə", "out": "ə" }
+  ]
+}

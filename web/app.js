@@ -1,5 +1,5 @@
 import { applyMap } from "./rewriter.js";
-import { blobToWav, exportPaths, ipaFileBody } from "./export.js";
+import { blobToWav, exportPaths, ipaFileBody } from "./export.js?v=1";
 import { STRINGS } from "./i18n.js";
 
 const DEFAULT_BASE = "https://1404kingstreet.com/gilaki-api";
@@ -143,7 +143,8 @@ function renderResult() {
   const card = $("transcript");
   card.dir = rtl ? "rtl" : "ltr";
   card.classList.toggle("arab", map.script === "Arab");
-  card.classList.toggle("latn", map.script !== "Arab");
+  card.classList.toggle("ipa", map.id === "ipa" || map.script === "Zyyy");
+  card.classList.toggle("latn", map.script !== "Arab" && map.id !== "ipa" && map.script !== "Zyyy");
   $("mapped").textContent = text || t("noResult");
   $("ipa").value = state.ipa;
   $("ipa").hidden = !state.showIpa;

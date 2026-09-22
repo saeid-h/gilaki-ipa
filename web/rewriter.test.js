@@ -28,6 +28,10 @@ describe("shared rewriter cases", () => {
     assert.equal(applyMap("q ə", preset("academic-latin")), "qə");
   });
 
+  it("keeps IPA phones on the ipa preset", () => {
+    assert.equal(applyMap("m ə ʃ ə n ɒ", preset("ipa")), "m ə ʃ ə n ɒ");
+  });
+
   it("lossy-persian may collapse ə", () => {
     const mapped = applyMap("m ə", preset("lossy-persian"));
     assert.ok(!mapped.includes("ə"));

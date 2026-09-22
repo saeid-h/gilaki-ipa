@@ -34,6 +34,11 @@ class RewriterTest {
     }
 
     @Test
+    fun ipaPresetKeepsPhones() {
+        assertEquals("m ə ʃ ə n ɒ", applyMap("m ə ʃ ə n ɒ", preset("ipa")))
+    }
+
+    @Test
     fun lossyPersianMayCollapseSchwa() {
         val mapped = applyMap("m ə", preset("lossy-persian"))
         assertFalse(mapped.contains("ə"))

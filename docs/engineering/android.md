@@ -46,7 +46,9 @@ Bottom bar: Record, Result, Maps, Settings (Caspian Paper teal indicator).
 
 Changing map on Result rewrites locally from the last IPA. Do not re-upload. After a successful recognize the app opens Result.
 
-Show sounds reveals an editable IPA field (quality loop). **Export wav + IPA** writes `take.<ext>` and `take.ipa.txt` under app-private `filesDir/export/`. Nothing is uploaded. Operator copies that folder off-device for PER (`scripts/score-per.py`).
+**Show IPA** / **Hide IPA** reveals an editable IPA field. An **IPA** chip in the map row shows the same phones as the transcript card.
+
+**Export wav + IPA** writes `take.<ext>` and `take.ipa.txt` under app-private `filesDir/export/`. Nothing is uploaded. Operator copies that folder off-device for PER (`scripts/score-per.py`).
 
 ## Recognize call
 

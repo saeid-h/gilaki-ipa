@@ -265,13 +265,19 @@ private fun ResultPane(state: UiState, copy: Copy, padding: PaddingValues, vm: G
                     .border(1.dp, Hairline, RoundedCornerShape(16.dp))
                     .padding(24.dp),
             ) {
+                val isArab = map?.script == "Arab"
+                val isIpa = map?.id == "ipa" || map?.script == "Zyyy"
                 Text(
                     mapped,
-                    color = Ink,
-                    fontSize = if (map?.script == "Arab") 32.sp else 28.sp,
-                    fontWeight = if (map?.script == "Arab") FontWeight.Medium else FontWeight.Normal,
-                    fontFamily = if (map?.script == "Arab") FontFamily.SansSerif else FontFamily.Serif,
-                    lineHeight = 44.sp,
+                    color = if (isIpa) IpaColor else Ink,
+                    fontSize = if (isArab) 32.sp else if (isIpa) 22.sp else 28.sp,
+                    fontWeight = if (isArab) FontWeight.Medium else FontWeight.Normal,
+                    fontFamily = when {
+                        isArab -> FontFamily.SansSerif
+                        isIpa -> FontFamily.SansSerif
+                        else -> FontFamily.Serif
+                    },
+                    lineHeight = if (isArab) 44.sp else 36.sp,
                 )
                 if (state.showIpa) {
                     Spacer(Modifier.height(16.dp))

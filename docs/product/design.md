@@ -132,7 +132,7 @@ Do not use Inter as the brand face. Do not fake Arabic with Tahoma.
 
 **Map chips:** pill, height 36px, unselected = canvas + hairline + ink; selected = `primary-soft` fill + `primary` text. Lossy chip shows a small clay dot.
 
-**IPA disclosure:** text control “Show sounds” / hide; IPA appears under the transcript in `ipa` color, never bold. After v1, the IPA line is an editor so a speaker can correct phones; mapped text still remaps locally.
+**IPA disclosure:** text control “Show IPA” / hide; IPA appears under the transcript in `ipa` color, never bold. An **IPA** map chip shows the same phones as the large card. After v1, the IPA line is an editor so a speaker can correct phones; mapped text still remaps locally.
 
 **Export:** ghost control “Export wav + IPA”. Files stay on the device.
 

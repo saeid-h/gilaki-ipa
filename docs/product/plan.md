@@ -264,6 +264,7 @@ IPA input to the rewriter is a space-separated token string.
 | `varg-perso-arabic` | Varg-style Perso-Arabic | Arab RTL | no | Keep schwa as `ٚ` and extra vowel letters |
 | `academic-latin` | Academic Latin | Latn LTR | no | `ə č ǰ š ž å` style |
 | `lossy-persian` | Persian-compatible | Arab RTL | **yes** | Ordinary Persian letters; vowels collapse |
+| `ipa` | IPA | phones LTR | no | Space-separated broad IPA (same as Show IPA, as the main card) |
 | `english-approx` | English approximate | Latn LTR | yes | `sh zh kh gh` reading aid |
 
 Cyrillic is allowed by the schema but **no official community standard**. Do not ship a Cyrillic preset until someone drafts one in a plan revision.
