@@ -22,6 +22,18 @@ def test_longest_match_affricate():
     assert apply_map("tʃ ə", VAR_G) == "چٚ"
 
 
+def test_tie_bar_folds_during_mapping():
+    assert apply_map("t͡ʃ ə", VAR_G) == "چٚ"
+
+
+def test_ipa_preset_keeps_recognizer_spelling():
+    from app.catalog import get_preset
+
+    ipa = get_preset("ipa")
+    assert ipa
+    assert apply_map("t͡ʃ æ", ipa) == "t͡ʃ æ"
+
+
 def test_schwa_and_rtl_letters():
     assert apply_map("m ə ʃ ə n ɒ", VAR_G) == "مٚشٚنآ"
 

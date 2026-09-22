@@ -50,7 +50,12 @@ def test_gilaki_unit_file_excludes_world_phones():
     assert all(" " not in phone for phone in phones)
 
 
-def test_default_allosaurus_lang_is_inventory_file():
+def test_default_allosaurus_lang_is_model_ipa():
+    assert allosaurus_lang_id() == "ipa"
+
+
+def test_glk_lang_is_inventory_file(monkeypatch):
+    monkeypatch.setattr(settings, "allosaurus_lang", "glk")
     path = Path(allosaurus_lang_id())
     assert path.is_file()
     lines = [line for line in path.read_text(encoding="utf-8").splitlines() if line]

@@ -32,6 +32,12 @@ describe("shared rewriter cases", () => {
     assert.equal(applyMap("m ə ʃ ə n ɒ", preset("ipa")), "m ə ʃ ə n ɒ");
   });
 
+  it("folds a tie bar while mapping, and leaves it on the IPA preset", () => {
+    const aliases = JSON.parse(readFileSync(join(root, "schemas", "gilaki_inventory.json"), "utf8")).aliases;
+    assert.equal(applyMap("t͡ʃ ə", preset("varg-perso-arabic"), aliases), "چٚ");
+    assert.equal(applyMap("t͡ʃ æ", preset("ipa"), aliases), "t͡ʃ æ");
+  });
+
   it("lossy-persian may collapse ə", () => {
     const mapped = applyMap("m ə", preset("lossy-persian"));
     assert.ok(!mapped.includes("ə"));

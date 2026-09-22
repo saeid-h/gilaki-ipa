@@ -11,6 +11,9 @@ interface GilakiApi {
     @GET("health")
     suspend fun health(): HealthResponse
 
+    @GET("v1/phonology")
+    suspend fun phonology(): PhonologyResponse
+
     @GET("v1/presets")
     suspend fun presets(): PresetsResponse
 

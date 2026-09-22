@@ -33,6 +33,7 @@ const state = {
   lang: localStorage.getItem(KEYS.lang) === "fa" ? "fa" : "en",
   base: localStorage.getItem(KEYS.base) || DEFAULT_BASE,
   maps: {},
+  aliases: {},
   activeId: DEFAULT_PRESET,
   ipa: localStorage.getItem(KEYS.lastIpa) || "",
   showIpa: false,
@@ -65,7 +66,7 @@ function mappedText() {
   if (!state.ipa) return "";
   const map = activeMap();
   if (!map) return "";
-  return applyMap(state.ipa, map);
+  return applyMap(state.ipa, map, state.aliases);
 }
 
 function setStatus(kind, extra = "") {
@@ -174,6 +175,8 @@ async function loadPresets() {
       state.maps = {};
     }
   }
+  const phono = await api("/v1/phonology");
+  state.aliases = phono.inventory?.aliases || {};
   const list = await api("/v1/presets");
     const maps = {};
     for (const row of list.presets || []) {

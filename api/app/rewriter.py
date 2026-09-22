@@ -3,6 +3,8 @@ from __future__ import annotations
 import unicodedata
 from typing import Any
 
+from .catalog import load_inventory
+
 
 def _normalize(text: str, form: str) -> str:
     return unicodedata.normalize(form, text)
@@ -13,11 +15,22 @@ def tokenize_ipa(ipa: str) -> list[str]:
     return [tok for tok in ipa.replace(".", " ").replace("-", " ").split() if tok]
 
 
+def map_aliases(transcript_map: dict[str, Any]) -> dict[str, str]:
+    """Orthographic maps fold Allosaurus spellings. The IPA map stays literal."""
+    if transcript_map.get("id") == "ipa":
+        return {}
+    supplied = transcript_map.get("aliases")
+    if isinstance(supplied, dict):
+        return {str(k): str(v) for k, v in supplied.items()}
+    return {str(k): str(v) for k, v in (load_inventory().get("aliases") or {}).items()}
+
+
 def apply_map(ipa: str, transcript_map: dict[str, Any]) -> str:
     form = transcript_map.get("normalize") or "NFC"
     separator = transcript_map.get("separator", "")
     unknown = transcript_map.get("unknown")
     rules = transcript_map.get("rules") or []
+    aliases = map_aliases(transcript_map)
 
     # Longest IPA key first so tʃ wins over t + ʃ if someone passed a raw string.
     compiled = sorted(
@@ -35,12 +48,13 @@ def apply_map(ipa: str, transcript_map: dict[str, Any]) -> str:
 
     out: list[str] = []
     for token in tokens:
-        if token in lookup:
-            out.append(lookup[token])
+        folded = aliases.get(token, token)
+        if folded in lookup:
+            out.append(lookup[folded])
         elif unknown is not None:
             out.append(unknown)
         else:
-            out.append(token)
+            out.append(folded)
     return _normalize(separator.join(out), form)
 
 

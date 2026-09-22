@@ -36,7 +36,7 @@ Install **CPU** torch (`pip install torch --index-url https://download.pytorch.o
 
 First `read_recognizer()` downloads weights (outbound HTTPS, no Hugging Face token). Mock stays in the same binary: change the env var and restart.
 
-Leave `ALLOSAURUS_LANG=glk` (or `ipa`) so decoding uses the Gilaki inventory file. `ALLOSAURUS_LANG=all` restores the ~230-phone dump and the transcript will jump between similar world phones.
+Leave `ALLOSAURUS_LANG=ipa` so the IPA line is the model's own phones. `ALLOSAURUS_LANG=glk` forces the Gilaki inventory and rewrites sounds outside that set.
 
 ## Reverse proxy (this host: Caddy in Docker)
 

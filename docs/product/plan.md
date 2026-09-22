@@ -411,10 +411,10 @@ MAX_DURATION_SEC=60
 CORS_ORIGINS=https://1404kingstreet.com,http://127.0.0.1:18741,http://localhost:18741,http://127.0.0.1:4173,http://localhost:4173
 PRESETS_DIR=../schemas/presets
 INVENTORY_PATH=../schemas/gilaki_inventory.json
-ALLOSAURUS_LANG=glk
+ALLOSAURUS_LANG=ipa
 ```
 
-`ALLOSAURUS_LANG=ipa` or `glk` constrains Allosaurus to `schemas/gilaki_inventory.json` (a phone-list file passed as `lang_id`). The library `ipa` inventory is ~230 phones and jumps between similar world symbols. Use `ALLOSAURUS_LANG=all` only to debug unconstrained decoding.
+`ALLOSAURUS_LANG=ipa` (the default) returns the model's own phones unchanged. The IPA line is what was heard. Orthographic maps fold inventory aliases (`t͡ʃ` → `tʃ`) before their writing rules. The IPA preset does not fold. `ALLOSAURUS_LANG=glk` forces `schemas/gilaki_inventory.json` inside the recognizer and rewrites sounds outside that set.
 
 `API_KEY` stays empty in v1. Local API listen: `127.0.0.1:18741` (not 8080, not `0.0.0.0` on the public host).
 
@@ -602,7 +602,8 @@ Playwright talks to mock only. It is not a real-speech quality test.
 - `ASR_BACKEND=mock` suite still green
 - Allosaurus tests skip cleanly if the model is not installed
 - When installed: phones pass alias normalize (`š` → `ʃ`, etc.); unknown symbols do not crash the rewriter
-- Default Allosaurus `lang_id` is the Gilaki inventory file, not the 230-phone `ipa` dump
+- Default Allosaurus `lang_id` is the model's own `ipa` set, returned unchanged. Orthographic maps fold inventory aliases; the IPA preset does not. `ALLOSAURUS_LANG=glk` is the optional Gilaki-only mask inside the recognizer.
+- Calibration clip `api/tests/fixtures/calibration/hello-this-is-a-test.wav` is synthetic English (“Hello. This is a test.”), not a user recording and not Gilaki. `scripts/calibrate-asr.py` checks the live API against the stored unconstrained Allosaurus baseline.
 
 ### 12.7 Phase 7 — quality
 

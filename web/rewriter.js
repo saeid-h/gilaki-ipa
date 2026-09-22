@@ -36,20 +36,22 @@ function greedy(text, compiled, unknown) {
   return chunks.join("");
 }
 
-export function applyMap(ipa, transcriptMap) {
+export function applyMap(ipa, transcriptMap, aliases = {}) {
   const form = transcriptMap.normalize || "NFC";
   const separator = transcriptMap.separator ?? "";
   const unknown = Object.hasOwn(transcriptMap, "unknown") ? transcriptMap.unknown : undefined;
   const compiled = compileRules(transcriptMap);
   const lookup = Object.fromEntries(compiled);
+  const fold = transcriptMap.id === "ipa" ? {} : aliases;
   const tokens = tokenizeIpa(normalize(ipa, form));
   if (!tokens.length) {
     return greedy([...ipa].join("").replace(/\s+/g, ""), compiled, unknown);
   }
   const out = tokens.map((token) => {
-    if (Object.hasOwn(lookup, token)) return lookup[token];
+    const folded = Object.hasOwn(fold, token) ? fold[token] : token;
+    if (Object.hasOwn(lookup, folded)) return lookup[folded];
     if (unknown !== undefined) return unknown;
-    return token;
+    return folded;
   });
   return normalize(out.join(separator), form);
 }

@@ -4,6 +4,8 @@ import com.kingstreet.gilaki.data.WireMap
 import com.kingstreet.gilaki.data.toTranscriptMap
 import java.io.File
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -39,6 +41,13 @@ class RewriterTest {
     }
 
     @Test
+    fun tieBarFoldsDuringMapping() {
+        val fold = inventoryAliases()
+        assertEquals("چٚ", applyMap("t͡ʃ ə", preset("varg-perso-arabic"), fold))
+        assertEquals("t͡ʃ æ", applyMap("t͡ʃ æ", preset("ipa"), fold))
+    }
+
+    @Test
     fun lossyPersianMayCollapseSchwa() {
         val mapped = applyMap("m ə", preset("lossy-persian"))
         assertFalse(mapped.contains("ə"))
@@ -61,5 +70,23 @@ class RewriterTest {
             dir = dir.parentFile ?: return@repeat
         }
         error("missing preset $id (cwd=${File(".").canonicalFile})")
+    }
+
+    private fun inventoryAliases(): Map<String, String> {
+        var dir = File(".").canonicalFile
+        val text = run {
+            var found: String? = null
+            repeat(8) {
+                val candidate = File(dir, "schemas/gilaki_inventory.json")
+                if (candidate.isFile) {
+                    found = candidate.readText()
+                    return@run found
+                }
+                dir = dir.parentFile ?: return@repeat
+            }
+            error("missing gilaki inventory")
+        }
+        val table = json.decodeFromString<JsonObject>(text)["aliases"] as JsonObject
+        return table.mapValues { (_, value) -> (value as JsonPrimitive).content }
     }
 }

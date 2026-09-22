@@ -24,6 +24,17 @@ data class PresetSummary(
 )
 
 @Serializable
+data class PhonologyResponse(
+    val ok: Boolean = false,
+    val inventory: InventoryWire = InventoryWire(),
+)
+
+@Serializable
+data class InventoryWire(
+    val aliases: Map<String, String> = emptyMap(),
+)
+
+@Serializable
 data class PresetsResponse(
     val ok: Boolean = false,
     val presets: List<PresetSummary> = emptyList(),

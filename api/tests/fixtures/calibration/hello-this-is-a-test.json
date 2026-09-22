@@ -1,0 +1,13 @@
+{
+  "id": "hello-this-is-a-test",
+  "utterance": "Hello. This is a test.",
+  "speaker": "macOS say, synthetic. Not a person and not Gilaki.",
+  "reference": "h ɛ l oʊ ð ɪ s ɪ z ə t ɛ s t",
+  "baselines": {
+    "measured": "2026-09-22",
+    "model": "allosaurus uni2005",
+    "allosaurus_ipa": "t ɛ l o w ð ɪ s ɪ z ə t͡ʃʲ ɛ s t",
+    "allosaurus_gilaki": "t ɛ l o ʔ iː s iː z ə t ɛ s t"
+  },
+  "note": "The API returns the model's own phones (allosaurus_ipa). allosaurus_gilaki is what the same clip becomes if decoding is forced onto the Gilaki inventory. This clip is not a Gilaki accuracy test."
+}

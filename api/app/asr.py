@@ -60,16 +60,16 @@ def inventory_unit_path(inventory: dict | None = None) -> Path:
 
 
 def allosaurus_lang_id() -> str:
-    """Allosaurus `lang_id`. A file path constrains decoding to that unit list.
+    """Allosaurus `lang_id`.
 
-    `ipa` (the library default) is the full ~230-phone set and jumps between
-    similar world phones, which reads as random Gilaki. `ipa`/`glk`/empty use
-    the Gilaki inventory file instead. Set `ALLOSAURUS_LANG=all` for unconstrained.
+    Default and `ipa` use the model's own phones, so the IPA line is what was
+    heard. `glk` forces the Gilaki inventory file and rewrites sounds outside
+    that set (English ð, w, ɪ become other Gilaki phones).
     """
-    requested = (settings.allosaurus_lang or "glk").strip().lower()
-    if requested in {"", "ipa", "glk"}:
+    requested = (settings.allosaurus_lang or "ipa").strip().lower()
+    if requested in {"glk", "gilaki"}:
         return str(inventory_unit_path())
-    if requested in {"all", "unconstrained"}:
+    if requested in {"", "ipa", "all", "unconstrained"}:
         return "ipa"
     return requested
 
@@ -178,14 +178,11 @@ class AllosaurusBackend(AsrBackend):
         finally:
             path.unlink(missing_ok=True)
 
-        inventory = load_inventory()
-        allowed = inventory_phones(inventory)
         phones: list[Phone] = []
         for phone in parse_allosaurus_output(str(raw) if raw is not None else ""):
-            ipa = normalize_token(phone.ipa, inventory)
-            if ipa not in allowed:
+            if not phone.ipa:
                 continue
-            phones.append(Phone(ipa=ipa, start=phone.start, end=phone.end))
+            phones.append(phone)
         return AsrResult(phones=phones, backend=self.name)
 
 

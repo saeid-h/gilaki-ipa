@@ -34,6 +34,7 @@ data class UiState(
     val lang: String = "en",
     val apiBase: String = BuildConfig.DEFAULT_API_BASE,
     val maps: Map<String, TranscriptMap> = emptyMap(),
+    val aliases: Map<String, String> = emptyMap(),
     val activeId: String = DEFAULT_PRESET,
     val ipa: String = "",
     val showIpa: Boolean = false,
@@ -82,7 +83,7 @@ class GilakiViewModel(app: Application) : AndroidViewModel(app) {
         val ipa = _state.value.ipa
         if (ipa.isBlank()) return ""
         val map = activeMap() ?: return ""
-        return applyMap(ipa, map)
+        return applyMap(ipa, map, _state.value.aliases)
     }
 
     fun setLang(lang: String) {
@@ -208,6 +209,7 @@ class GilakiViewModel(app: Application) : AndroidViewModel(app) {
     private suspend fun loadPresets() {
         try {
             val api = gilakiApi(_state.value.apiBase)
+            val aliases = api.phonology().inventory.aliases
             val list = api.presets()
             val maps = linkedMapOf<String, TranscriptMap>()
             for (row in list.presets) {
@@ -216,7 +218,7 @@ class GilakiViewModel(app: Application) : AndroidViewModel(app) {
                 maps[row.id] = map
             }
             prefs.saveMapsCache(json.encodeToString(maps.mapValues { it.value.toWire() }))
-            _state.update { it.copy(maps = maps, status = "ready", error = "") }
+            _state.update { it.copy(maps = maps, aliases = aliases, status = "ready", error = "") }
         } catch (err: Exception) {
             fail(err)
         }
