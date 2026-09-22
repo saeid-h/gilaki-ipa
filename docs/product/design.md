@@ -132,7 +132,9 @@ Do not use Inter as the brand face. Do not fake Arabic with Tahoma.
 
 **Map chips:** pill, height 36px, unselected = canvas + hairline + ink; selected = `primary-soft` fill + `primary` text. Lossy chip shows a small clay dot.
 
-**IPA disclosure:** text control “Show sounds” / hide; IPA appears under the transcript in `ipa` color, never bold.
+**IPA disclosure:** text control “Show sounds” / hide; IPA appears under the transcript in `ipa` color, never bold. After v1, the IPA line is an editor so a speaker can correct phones; mapped text still remaps locally.
+
+**Export:** ghost control “Export wav + IPA”. Files stay on the device.
 
 **Lossy banner:** `clay-soft` background, `clay` label, one line: this map collapses Gilaki vowels.
 
@@ -219,7 +221,7 @@ Ready prompt:
 ## 10. Screens (both clients)
 
 1. **Record** — title, mic, choose file, short status (ready / uploading / error)
-2. **Result** — chips for presets, paper card (mapped), optional IPA, lossy banner if needed
+2. **Result** — chips for presets, paper card (mapped), optional IPA (editable in the quality loop), lossy banner if needed, export `wav` + `ipa.txt` locally
 3. **Maps** — custom JSON editor, save locally
 4. **Settings** — API base URL; UI language English (default) or Persian. No API key.
 

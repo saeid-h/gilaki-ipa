@@ -25,6 +25,9 @@ data class Copy(
     val applyServer: String,
     val lossy: String,
     val noResult: String,
+    val saveSounds: String,
+    val exportPair: String,
+    val exported: String,
 )
 
 fun copy(lang: String): Copy = if (lang == "fa") FA else EN
@@ -54,6 +57,9 @@ private val EN = Copy(
     applyServer = "Apply this custom map on the server for the next upload",
     lossy = "This map collapses Gilaki vowels.",
     noResult = "Record or choose a file to transcribe.",
+    saveSounds = "Save sounds",
+    exportPair = "Export wav + IPA",
+    exported = "Saved in app export folder",
 )
 
 private val FA = Copy(
@@ -81,4 +87,7 @@ private val FA = Copy(
     applyServer = "برای بارگذاری بعدی این نقشهٔ سفارشی روی سرور اعمال شود",
     lossy = "این نقشه واکه‌های گیلکی را ساده می‌کند.",
     noResult = "ضبط کنید یا پرونده‌ای انتخاب کنید.",
+    saveSounds = "ذخیرهٔ صداها",
+    exportPair = "خروجی wav و IPA",
+    exported = "در پوشهٔ خروجی برنامه ذخیره شد",
 )

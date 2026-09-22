@@ -71,6 +71,12 @@ Android unit tests (JDK 17+):
 cd android && ./gradlew :app:testDebugUnitTest
 ```
 
+PER on a local export folder (optional gold/hyp triples; no upload):
+
+```bash
+python3 scripts/score-per.py path/to/clips
+```
+
 ## Privacy split
 
 | Data | Where it lives |

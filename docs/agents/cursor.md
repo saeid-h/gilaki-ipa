@@ -47,6 +47,10 @@ Zero-build `web/index.html` plus a small rewriter JS module with Node unit tests
 
 Kotlin module `com.kingstreet.gilaki` with Retrofit, Settings for base URL only (no API key), file/mic capture, Result with mapped text + optional IPA, custom map in DataStore, HTTPS-only release. Same rewriter unit tests as §12; Gradle asserts applicationId.
 
+### 6. Quality loop
+
+On-device IPA correction after a result, export `wav` + `ipa.txt` locally, never upload the corpus. Tests: export pair shape (Python/JS/Kotlin) and `scripts/score-per.py` no-op on an empty folder. Do not add API storage.
+
 ## Local commands
 
 ```bash

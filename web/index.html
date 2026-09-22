@@ -169,7 +169,11 @@
       font-weight: 400;
       line-height: 1.5;
       color: var(--ipa);
+      min-height: 4rem;
+      width: 100%;
+      resize: vertical;
     }
+    .result-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
     label.field, .hint { display: block; margin: 12px 0; color: var(--ink-muted); font-size: 13px; font-weight: 500; }
     input[type="text"], textarea, .lang-row {
       width: 100%;
@@ -236,9 +240,12 @@
       <div id="lossy" class="banner" hidden data-i18n="lossy">This map collapses Gilaki vowels.</div>
       <article id="transcript" class="paper arab">
         <p id="mapped" data-testid="mapped"></p>
-        <p id="ipa" data-testid="ipa" hidden></p>
+        <textarea id="ipa" data-testid="ipa" hidden spellcheck="false"></textarea>
       </article>
-      <button class="ghost" id="showIpa" type="button" data-testid="show-ipa" data-i18n="showSounds">Show sounds</button>
+      <div class="result-actions">
+        <button class="ghost" id="showIpa" type="button" data-testid="show-ipa" data-i18n="showSounds">Show sounds</button>
+        <button class="ghost" id="exportPair" type="button" data-testid="export" hidden data-i18n="exportPair">Export wav + IPA</button>
+      </div>
     </section>
 
     <section data-screen="maps" hidden>
@@ -265,6 +272,6 @@
       <button class="primary" id="saveSettings" type="button" data-i18n="saveSettings">Save</button>
     </section>
   </div>
-  <script type="module" src="./app.js?v=3"></script>
+  <script type="module" src="./app.js?v=4"></script>
 </body>
 </html>

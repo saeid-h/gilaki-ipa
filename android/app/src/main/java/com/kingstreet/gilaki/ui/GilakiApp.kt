@@ -273,14 +273,30 @@ private fun ResultPane(state: UiState, copy: Copy, padding: PaddingValues, vm: G
                     fontFamily = if (map?.script == "Arab") FontFamily.SansSerif else FontFamily.Serif,
                     lineHeight = 44.sp,
                 )
-                if (state.showIpa && state.ipa.isNotBlank()) {
+                if (state.showIpa) {
                     Spacer(Modifier.height(16.dp))
-                    Text(state.ipa, color = IpaColor, fontSize = 16.sp)
+                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                        OutlinedTextField(
+                            value = state.ipa,
+                            onValueChange = vm::setIpa,
+                            modifier = Modifier.fillMaxWidth(),
+                            label = { Text(copy.saveSounds) },
+                            textStyle = TextStyle(fontSize = 16.sp, color = IpaColor),
+                        )
+                    }
                 }
             }
         }
         TextButton(onClick = { vm.toggleIpa() }) {
             Text(if (state.showIpa) copy.hideSounds else copy.showSounds, color = Ink)
+        }
+        if (state.ipa.isNotBlank()) {
+            TextButton(onClick = { vm.exportClip() }) {
+                Text(copy.exportPair, color = Ink)
+            }
+        }
+        if (state.exportNote == "ok") {
+            Text(copy.exported, color = InkFaint, fontSize = 13.sp)
         }
     }
 }

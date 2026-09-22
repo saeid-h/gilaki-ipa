@@ -200,6 +200,8 @@ file or microphone
   → delete temp file
   → client shows mapped transcript (main)
   → client may toggle IPA
+  → client may correct IPA on device and remap locally
+  → client may export `wav` + `ipa.txt` locally (quality loop)
   → client may re-map locally when the user changes map
 ```
 
@@ -603,7 +605,9 @@ Playwright talks to mock only. It is not a real-speech quality test.
 
 ### 12.7 Phase 7 — quality
 
-- Export produces `wav` + `ipa.txt` side by side on device
+- Export produces `wav` + `ipa.txt` side by side (`api/tests/test_export.py`, JS `export.test.js`, Kotlin `ExportTest`)
+- Correcting IPA on the client remaps without a second upload
+- `scripts/score-per.py <folder>` scores PER when `*.wav` + `*.ipa.txt` + `*.hyp.txt` triples exist; empty folder is a no-op
 - Score **PER** on 20–50 local Gilaki clips. Judge maps by “a speaker can read it back.”
 
 ---

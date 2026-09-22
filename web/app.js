@@ -1,4 +1,5 @@
 import { applyMap } from "./rewriter.js";
+import { blobToWav, exportPaths, ipaFileBody } from "./export.js";
 import { STRINGS } from "./i18n.js";
 
 const DEFAULT_BASE = "https://1404kingstreet.com/gilaki-api";
@@ -40,6 +41,7 @@ const state = {
   applyOnServer: localStorage.getItem(KEYS.applyServer) === "1",
   recorder: null,
   chunks: [],
+  lastAudio: null,
 };
 
 function t(key) {
@@ -143,8 +145,9 @@ function renderResult() {
   card.classList.toggle("arab", map.script === "Arab");
   card.classList.toggle("latn", map.script !== "Arab");
   $("mapped").textContent = text || t("noResult");
-  $("ipa").textContent = state.ipa;
+  $("ipa").value = state.ipa;
   $("ipa").hidden = !state.showIpa;
+  $("exportPair").hidden = !state.ipa;
   $("showIpa").textContent = state.showIpa ? t("hideSounds") : t("showSounds");
   $("lossy").hidden = !map.lossy;
   showView("main");
@@ -185,6 +188,7 @@ async function loadPresets() {
 }
 
 async function recognize(blob, filename) {
+  state.lastAudio = { blob, filename: filename || "clip.wav" };
   setStatus("uploading");
   const body = new FormData();
   body.append("audio", blob, filename || "clip.webm");
@@ -201,6 +205,26 @@ async function recognize(blob, filename) {
   }
   renderChips();
   renderResult();
+}
+
+function downloadBlob(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = name;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+async function exportPair() {
+  if (!state.ipa) return;
+  const stem = "take";
+  const names = exportPaths(stem);
+  const wav = state.lastAudio?.blob
+    ? await blobToWav(state.lastAudio.blob)
+    : new Blob([""], { type: "audio/wav" });
+  downloadBlob(wav, names.wav);
+  downloadBlob(new Blob([ipaFileBody(state.ipa)], { type: "text/plain" }), names.ipa);
 }
 
 async function onFile(file) {
@@ -258,6 +282,14 @@ function bind() {
   $("showIpa").addEventListener("click", () => {
     state.showIpa = !state.showIpa;
     renderResult();
+  });
+  $("ipa").addEventListener("input", () => {
+    state.ipa = $("ipa").value;
+    localStorage.setItem(KEYS.lastIpa, state.ipa);
+    $("mapped").textContent = mappedText() || t("noResult");
+  });
+  $("exportPair").addEventListener("click", () => {
+    exportPair().catch((err) => setStatus("error", String(err.message || err)));
   });
   $("openMaps").addEventListener("click", () => showView("maps"));
   $("openSettings").addEventListener("click", () => showView("settings"));

@@ -27,6 +27,8 @@ export const STRINGS = {
     mapped: "Transcript",
     ipa: "Sounds",
     noResult: "Record or choose a file to transcribe.",
+    saveSounds: "Save sounds",
+    exportPair: "Export wav + IPA",
   },
   fa: {
     title: "گیلکی",
@@ -56,5 +58,7 @@ export const STRINGS = {
     mapped: "نوشتار",
     ipa: "صداها",
     noResult: "ضبط کنید یا پرونده‌ای انتخاب کنید.",
+    saveSounds: "ذخیرهٔ صداها",
+    exportPair: "خروجی wav و IPA",
   },
 };

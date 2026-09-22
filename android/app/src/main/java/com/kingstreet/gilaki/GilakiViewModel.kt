@@ -12,6 +12,7 @@ import com.kingstreet.gilaki.data.Prefs
 import com.kingstreet.gilaki.data.WireMap
 import com.kingstreet.gilaki.data.gilakiApi
 import com.kingstreet.gilaki.data.toTranscriptMap
+import com.kingstreet.gilaki.export.copyAudioAndIpa
 import com.kingstreet.gilaki.rewriter.TranscriptMap
 import com.kingstreet.gilaki.rewriter.applyMap
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +44,7 @@ data class UiState(
     val customJson: String = DEFAULT_CUSTOM,
     val recording: Boolean = false,
     val showResult: Boolean = false,
+    val exportNote: String = "",
 )
 
 private val DEFAULT_CUSTOM = """
@@ -65,6 +67,7 @@ class GilakiViewModel(app: Application) : AndroidViewModel(app) {
     val state: StateFlow<UiState> = _state
     private var recorder: MediaRecorder? = null
     private val takeFile = File(app.filesDir, "take.m4a")
+    private var lastAudio: File? = null
 
     init {
         viewModelScope.launch { boot() }
@@ -107,6 +110,25 @@ class GilakiViewModel(app: Application) : AndroidViewModel(app) {
 
     fun toggleIpa() {
         _state.update { it.copy(showIpa = !it.showIpa) }
+    }
+
+    fun setIpa(value: String) {
+        _state.update { it.copy(ipa = value, exportNote = "") }
+        viewModelScope.launch { prefs.saveLastIpa(value) }
+    }
+
+    fun exportClip() {
+        viewModelScope.launch {
+            try {
+                val audio = lastAudio?.takeIf { it.exists() } ?: takeFile.takeIf { it.exists() }
+                    ?: error("no audio")
+                val dir = File(getApplication<Application>().filesDir, "export")
+                copyAudioAndIpa(dir, "take", audio, _state.value.ipa)
+                _state.update { it.copy(exportNote = "ok", error = "", status = "ready") }
+            } catch (err: Exception) {
+                fail(err)
+            }
+        }
     }
 
     fun consumeShowResult() {
@@ -156,6 +178,7 @@ class GilakiViewModel(app: Application) : AndroidViewModel(app) {
                     dest.outputStream().use { output -> input.copyTo(output) }
                 } ?: error("unreadable")
                 recognize(dest, dest.name)
+                lastAudio = dest
             } catch (err: Exception) {
                 fail(err)
             }
@@ -238,7 +261,8 @@ class GilakiViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private suspend fun recognize(file: File, filename: String) {
-        _state.update { it.copy(status = "uploading", error = "") }
+        lastAudio = file
+        _state.update { it.copy(status = "uploading", error = "", exportNote = "") }
         val body = file.asRequestBody("audio/*".toMediaType())
         val audio = MultipartBody.Part.createFormData("audio", filename, body)
         val s = _state.value
