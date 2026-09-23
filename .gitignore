@@ -19,3 +19,5 @@ web/playwright-report/
 web/test-results/
 web/blob-report/
 data/
+*.crdownload
+*.tar.gz
