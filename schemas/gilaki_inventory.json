@@ -247,5 +247,63 @@
     "Broad phonemic inventory for mapping, not narrow phonetic detail.",
     "x covers [x]~[χ]; ɣ covers [ɣ]~[ʁ]; r covers [r]~[ɾ].",
     "Eastern and Galeshi profiles can add or reinterpret a few vowels later."
+  ],
+  "rewrites": [
+    {
+      "from": [
+        "n",
+        "n"
+      ],
+      "to": [
+        "n"
+      ]
+    },
+    {
+      "from": [
+        "u",
+        "o"
+      ],
+      "to": [
+        "o"
+      ]
+    },
+    {
+      "from": [
+        "ɒ",
+        "m"
+      ],
+      "to": [
+        "a",
+        "m"
+      ]
+    },
+    {
+      "from": [
+        "a",
+        "i"
+      ],
+      "to": [
+        "a"
+      ]
+    },
+    {
+      "from": [
+        "a",
+        "o"
+      ],
+      "to": [
+        "a"
+      ]
+    },
+    {
+      "from": [
+        "ɒ",
+        "s"
+      ],
+      "to": [
+        "a",
+        "s"
+      ]
+    }
   ]
 }

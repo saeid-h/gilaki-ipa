@@ -66,6 +66,73 @@
      }
     }
    ]
+  },
+  {
+   "pass": "context",
+   "start": {
+    "dolma_final_per": 0.4493,
+    "persian_final_per": 0.587,
+    "cer_varg-perso-arabic": 0.6073,
+    "cer_lossy-persian": 0.6854,
+    "academic_latin_chars": 20627
+   },
+   "end": {
+    "dolma_final_per": 0.4394,
+    "persian_final_per": 0.5743,
+    "cer_varg-perso-arabic": 0.597,
+    "cer_lossy-persian": 0.673,
+    "academic_latin_chars": 20255
+   },
+   "rules": [
+    {
+     "rule": "n n -> n",
+     "basis": "dolma-sparse",
+     "gain": {
+      "persian": 0.0019,
+      "dolma": 0.0051
+     }
+    },
+    {
+     "rule": "u o -> o",
+     "basis": "persian",
+     "gain": {
+      "persian": 0.003,
+      "dolma": 0.0019
+     }
+    },
+    {
+     "rule": "ɒ m -> a m",
+     "basis": "dolma-sparse",
+     "gain": {
+      "persian": 0.001,
+      "dolma": 0.0026
+     }
+    },
+    {
+     "rule": "a i -> a",
+     "basis": "persian",
+     "gain": {
+      "persian": 0.0064,
+      "dolma": 0.0005
+     }
+    },
+    {
+     "rule": "a o -> a",
+     "basis": "dolma-sparse",
+     "gain": {
+      "persian": 0.0015,
+      "dolma": 0.0035
+     }
+    },
+    {
+     "rule": "ɒ s -> a s",
+     "basis": "dolma-sparse",
+     "gain": {
+      "persian": 0.0008,
+      "dolma": 0.002
+     }
+    }
+   ]
   }
  ]
 }
