@@ -14,8 +14,8 @@ An **online Gilaki transcriber**. The user records or picks audio and gets writt
 
 Gilaki (`glk`) has **no single standard orthography**. The product therefore does **not** jump from audio to letters in one model. It does:
 
-1. Audio → **IPA** (broad phonemic transcription) — the model, approximate
-2. IPA → user-selected **transcript map** — deterministic: same IPA + same map = same text every time
+1. Audio → **IPA** (the recognizer’s own phones, unchanged) — the model, approximate
+2. Inventory filter, then a user-selected **transcript map** — deterministic: same IPA + same map = same text every time
 3. Maps may be a known script (Perso-Arabic / Farsi-style, Latin, English-approximate, Cyrillic later) or a **user-defined custom map**
 
 Positioning: a transcriber for Gilaki speech, not “Gilaki Whisper,” and not an in-session IPA editor.
@@ -193,9 +193,9 @@ file or microphone
   → FastAPI
   → ffmpeg: 16 kHz mono WAV in a NamedTemporaryFile
   → reject if duration > MAX_DURATION_SEC
-  → ASR backend → phone list (IPA tokens)
-  → optional alias normalize via gilaki_inventory.json
-  → optional apply preset or inline map
+  → ASR backend → phone list (IPA tokens, unchanged)
+  → inventory filter via gilaki_inventory.json aliases (an empty value drops the phone)
+  → apply preset or inline map (letter rules; the IPA preset skips the filter)
   → JSON response
   → delete temp file
   → client shows mapped transcript (main)
@@ -612,6 +612,7 @@ Playwright talks to mock only. It is not a real-speech quality test.
 - `scripts/score-per.py <folder>` scores PER when `*.wav` + `*.ipa.txt` + `*.hyp.txt` triples exist; empty folder is a no-op
 - Score **PER** on 20–50 local Gilaki clips. Judge maps by “a speaker can read it back.”
 - `scripts/dolma-eval.py` scores preset maps against the public DOLMA Gilaki test sentences (Arabic-script spelling, not IPA). Audio stays in gitignored `data/dolma/`. The dataset card states no license, so clips are not committed and are not stored on the API host. The picked map is the lowest character error rate after diacritics are stripped.
+- Order is raw IPA, then the inventory filter, then the writing map. `scripts/dolma-filter.py` judges cached phones against inverted Varg letters on a dev split, accepts only common stable folds, and scores Varg and lossy-Persian on the held-out clips with letter rules unchanged. `schemas/phone_filter_remaining.json` lists the letter misses still left for a later map pass.
 
 ---
 

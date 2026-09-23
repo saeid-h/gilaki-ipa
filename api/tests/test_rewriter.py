@@ -38,6 +38,18 @@ def test_schwa_and_rtl_letters():
     assert apply_map("m ə ʃ ə n ɒ", VAR_G) == "مٚشٚنآ"
 
 
+def test_learned_diacritic_folds_and_empty_alias_drops():
+    from app.catalog import get_preset
+
+    varg = get_preset("varg-perso-arabic")
+    assert apply_map("s̪", varg) == "س"
+    assert apply_map("b̥", varg) == "ب"
+    drop = {**VAR_G, "aliases": {"ʌ": ""}}
+    assert apply_map("ʌ m", drop) == "م"
+    ipa = get_preset("ipa")
+    assert apply_map("ʌ m", {**ipa, "aliases": {"ʌ": ""}}) == "ʌ m"
+
+
 def test_lossy_persian_may_collapse_schwa():
     from app.catalog import get_preset
     from app.rewriter import apply_map

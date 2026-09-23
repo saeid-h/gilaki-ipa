@@ -78,7 +78,7 @@ JSON response:
 
 `backend` follows `ASR_BACKEND`. Clients map IPA locally; they do not need to special-case Allosaurus.
 
-The `ipa` field is the recognizer’s phones as emitted (`ALLOSAURUS_LANG=ipa`). Nothing is dropped or rewritten there. Orthographic maps fold inventory aliases (`t͡ʃ` → `tʃ`) and then apply their rules. The IPA preset does not fold. `ALLOSAURUS_LANG=glk` forces the Gilaki inventory inside the recognizer instead.
+The `ipa` field is the recognizer’s phones as emitted (`ALLOSAURUS_LANG=ipa`). Nothing is dropped or rewritten there. Orthographic maps then apply the inventory filter (`schemas/gilaki_inventory.json` aliases, including an empty value that drops a phone) and then their letter rules. The IPA preset skips the filter. `ALLOSAURUS_LANG=glk` forces the Gilaki inventory inside the recognizer instead.
 
 `phones[].start/end` may be null if the backend has no alignment.
 

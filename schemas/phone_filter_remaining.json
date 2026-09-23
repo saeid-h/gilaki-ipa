@@ -1,0 +1,184 @@
+{
+  "note": "Eval letter misses after the filter. Input for a later map pass. Letter rules were not changed.",
+  "eval_before": {
+    "varg-perso-arabic": 1.0064389632233777,
+    "lossy-persian": 1.0480697699041797,
+    "n": 259
+  },
+  "eval_after": {
+    "varg-perso-arabic": 0.9870142700195176,
+    "lossy-persian": 1.0285520854308572,
+    "n": 259
+  },
+  "kept": true,
+  "dev_piles": {
+    "right": 4150,
+    "wrong": 6202,
+    "insertion": 1570,
+    "wrong_symbol": 283
+  },
+  "top_wrong_phones": [
+    {
+      "phone": "uə",
+      "count": 474
+    },
+    {
+      "phone": "ʌ",
+      "count": 420
+    },
+    {
+      "phone": "ɪ",
+      "count": 384
+    },
+    {
+      "phone": "a",
+      "count": 361
+    },
+    {
+      "phone": "e",
+      "count": 316
+    },
+    {
+      "phone": "ɒ",
+      "count": 312
+    },
+    {
+      "phone": "o",
+      "count": 180
+    },
+    {
+      "phone": "ə",
+      "count": 180
+    },
+    {
+      "phone": "ɴ",
+      "count": 168
+    },
+    {
+      "phone": "ð",
+      "count": 148
+    },
+    {
+      "phone": "tʂ",
+      "count": 138
+    },
+    {
+      "phone": "ʂ",
+      "count": 132
+    },
+    {
+      "phone": "tɕ",
+      "count": 108
+    },
+    {
+      "phone": "i",
+      "count": 103
+    },
+    {
+      "phone": "ɹ̩",
+      "count": 100
+    },
+    {
+      "phone": "n",
+      "count": 99
+    },
+    {
+      "phone": "ɛ",
+      "count": 98
+    },
+    {
+      "phone": "b̞",
+      "count": 93
+    },
+    {
+      "phone": "iː",
+      "count": 89
+    },
+    {
+      "phone": "ʁ",
+      "count": 88
+    }
+  ],
+  "letters": [
+    {
+      "letter": "أ",
+      "misses": 455
+    },
+    {
+      "letter": "ۊ",
+      "misses": 440
+    },
+    {
+      "letter": "ه",
+      "misses": 431
+    },
+    {
+      "letter": "ا",
+      "misses": 410
+    },
+    {
+      "letter": "ن",
+      "misses": 276
+    },
+    {
+      "letter": "ت",
+      "misses": 233
+    },
+    {
+      "letter": "ٚ",
+      "misses": 215
+    },
+    {
+      "letter": "د",
+      "misses": 208
+    },
+    {
+      "letter": "ر",
+      "misses": 195
+    },
+    {
+      "letter": "ی",
+      "misses": 194
+    },
+    {
+      "letter": "م",
+      "misses": 188
+    },
+    {
+      "letter": "ؤ",
+      "misses": 163
+    },
+    {
+      "letter": "ش",
+      "misses": 161
+    },
+    {
+      "letter": "ک",
+      "misses": 140
+    },
+    {
+      "letter": "ب",
+      "misses": 137
+    },
+    {
+      "letter": "و",
+      "misses": 132
+    },
+    {
+      "letter": "س",
+      "misses": 111
+    },
+    {
+      "letter": "ج",
+      "misses": 106
+    },
+    {
+      "letter": "ئ",
+      "misses": 76
+    },
+    {
+      "letter": "ل",
+      "misses": 74
+    }
+  ]
+}

@@ -38,6 +38,15 @@ describe("shared rewriter cases", () => {
     assert.equal(applyMap("t͡ʃ æ", preset("ipa"), aliases), "t͡ʃ æ");
   });
 
+  it("folds learned diacritics and drops an empty alias, except on IPA", () => {
+    const aliases = JSON.parse(readFileSync(join(root, "schemas", "gilaki_inventory.json"), "utf8")).aliases;
+    assert.equal(applyMap("s̪", preset("varg-perso-arabic"), aliases), "س");
+    assert.equal(applyMap("b̥", preset("varg-perso-arabic"), aliases), "ب");
+    const drop = { ...aliases, "ʌ": "" };
+    assert.equal(applyMap("ʌ m", preset("varg-perso-arabic"), drop), "م");
+    assert.equal(applyMap("ʌ m", preset("ipa"), drop), "ʌ m");
+  });
+
   it("lossy-persian may collapse ə", () => {
     const mapped = applyMap("m ə", preset("lossy-persian"));
     assert.ok(!mapped.includes("ə"));

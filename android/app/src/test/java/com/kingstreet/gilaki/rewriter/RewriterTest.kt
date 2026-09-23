@@ -48,6 +48,16 @@ class RewriterTest {
     }
 
     @Test
+    fun learnedDiacriticFoldsAndEmptyAliasDrops() {
+        val fold = inventoryAliases()
+        assertEquals("س", applyMap("s̪", preset("varg-perso-arabic"), fold))
+        assertEquals("ب", applyMap("b̥", preset("varg-perso-arabic"), fold))
+        val drop = fold + ("ʌ" to "")
+        assertEquals("م", applyMap("ʌ m", preset("varg-perso-arabic"), drop))
+        assertEquals("ʌ m", applyMap("ʌ m", preset("ipa"), drop))
+    }
+
+    @Test
     fun lossyPersianMayCollapseSchwa() {
         val mapped = applyMap("m ə", preset("lossy-persian"))
         assertFalse(mapped.contains("ə"))
