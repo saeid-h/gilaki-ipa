@@ -9,8 +9,10 @@ Passes:
 Candidates come from the propose split. Each is tested alone on the accept split:
   - the Persian judge must gain at least MIN_GAIN in PER with a bootstrap 90% interval above 0,
     and DOLMA must not lose more than TOLERANCE;
-  - a rule about ə or ü, or one the Persian clips barely touch, is judged by DOLMA instead
-    (logged as dolma-only);
+  - a rule about ə or ü is judged by DOLMA instead (logged as dolma-only);
+  - a rule the Persian clips barely touch is judged by DOLMA, but only if the Persian clips it
+    does touch show no loss (logged as dolma-sparse), so a vetoed rule cannot return split
+    into narrow contexts;
   - every output phone must be within MAX_FEATURE_DISTANCE of an input phone.
 A kept rule stays in force for later candidates, and alignment is rebuilt each round.
 
@@ -304,9 +306,13 @@ class Judge:
 
 def decide(cand: dict, stats: dict) -> tuple[bool, str]:
     fa, gk = stats.get("persian"), stats.get("dolma")
-    if touches_gilaki_only(cand) or not fa or fa["clips"] < MIN_PERSIAN_CLIPS:
-        ok = gk is not None and gk["gain"] >= MIN_GAIN and gk["low"] > 0
-        return ok, "dolma-only"
+    dolma_ok = gk is not None and gk["gain"] >= MIN_GAIN and gk["low"] > 0
+    if touches_gilaki_only(cand):
+        return dolma_ok, "dolma-only"
+    if not fa or fa["clips"] < MIN_PERSIAN_CLIPS:
+        # Sparse in Persian: DOLMA decides, but only if the Persian clips it does touch do not disagree.
+        persian_agrees = not fa or fa["clips"] == 0 or (fa["gain"] >= 0 and fa["low"] >= 0)
+        return dolma_ok and persian_agrees, "dolma-sparse"
     ok = fa["gain"] >= MIN_GAIN and fa["low"] > 0 and (gk is None or gk["gain"] >= -TOLERANCE)
     return ok, "persian"
 
