@@ -120,9 +120,10 @@ def guard(cand: dict) -> bool:
 
 
 def touches_gilaki_only(cand: dict) -> bool:
-    phones = set(cand["to"] if isinstance(cand["to"], list) else [cand["to"]])
-    if cand["kind"] == "rewrite":
-        phones |= set(cand["from"])
+    if cand["kind"] == "alias":
+        phones = {cand["from"], cand["to"]}
+    else:
+        phones = set(cand["from"]) | set(cand["to"])
     return bool(phones & GILAKI_ONLY)
 
 
