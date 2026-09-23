@@ -25,6 +25,32 @@ def map_aliases(transcript_map: dict[str, Any]) -> dict[str, str]:
     return {str(k): str(v) for k, v in (load_inventory().get("aliases") or {}).items()}
 
 
+def map_rewrites(transcript_map: dict[str, Any]) -> list[dict[str, list[str]]]:
+    """Multi-phone filter rules. The IPA map stays literal."""
+    if transcript_map.get("id") == "ipa":
+        return []
+    supplied = transcript_map.get("rewrites")
+    rules = supplied if isinstance(supplied, list) else (load_inventory().get("rewrites") or [])
+    return [{"from": list(r["from"]), "to": list(r["to"])} for r in rules]
+
+
+def apply_rewrites(tokens: list[str], rewrites: list[dict[str, list[str]]]) -> list[str]:
+    """Longest `from` first; equal lengths keep file order; each rule scans left to right without overlap."""
+    for rule in sorted(rewrites, key=lambda r: -len(r["from"])):
+        src, dst, n = rule["from"], rule["to"], len(rule["from"])
+        out: list[str] = []
+        i = 0
+        while i < len(tokens):
+            if tokens[i : i + n] == src:
+                out.extend(dst)
+                i += n
+            else:
+                out.append(tokens[i])
+                i += 1
+        tokens = out
+    return tokens
+
+
 def apply_map(ipa: str, transcript_map: dict[str, Any]) -> str:
     form = transcript_map.get("normalize") or "NFC"
     separator = transcript_map.get("separator", "")
@@ -46,9 +72,10 @@ def apply_map(ipa: str, transcript_map: dict[str, Any]) -> str:
         compact = "".join(ipa.split())
         return _greedy(compact, compiled, unknown)
 
+    folded_tokens = [aliases.get(token, token) for token in tokens]
+    folded_tokens = apply_rewrites([t for t in folded_tokens if t], map_rewrites(transcript_map))
     out: list[str] = []
-    for token in tokens:
-        folded = aliases.get(token, token)
+    for folded in folded_tokens:
         if folded in lookup:
             out.append(lookup[folded])
         elif unknown is not None:

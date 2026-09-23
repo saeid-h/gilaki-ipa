@@ -35,7 +35,12 @@ JSON index so a stripped prefix `/gilaki-api/` is not a 404.
 
 ### `GET /v1/phonology`
 
-Gilaki inventory used to constrain / validate phones.
+Gilaki inventory used to constrain / validate phones, plus the inventory filter that clients apply before any orthographic map:
+
+- `aliases`: one recognizer phone → one inventory phone. An empty value drops the phone.
+- `rewrites`: optional ordered list of `{ "from": [phones], "to": [phones] }`. These apply after aliases, longest `from` first; rules of equal length keep list order. Each rule scans left to right without overlapping matches.
+
+The `ipa` preset skips both. Clients that ignore `rewrites` still work, but their mapped text will differ slightly from the server's `/v1/map`.
 
 ### `GET /v1/presets`
 

@@ -19,24 +19,49 @@ data class TranscriptMap(
 fun tokenizeIpa(ipa: String): List<String> =
     ipa.replace(".", " ").replace("-", " ").split(Regex("\\s+")).filter { it.isNotEmpty() }
 
+data class Rewrite(val from: List<String>, val to: List<String>)
+
+/** Longest `from` first; equal lengths keep list order; each rule scans left to right without overlap. */
+fun applyRewrites(tokens: List<String>, rewrites: List<Rewrite>): List<String> {
+    var current = tokens
+    for (rule in rewrites.sortedByDescending { it.from.size }) {
+        val n = rule.from.size
+        val out = ArrayList<String>(current.size)
+        var i = 0
+        while (i < current.size) {
+            if (i + n <= current.size && current.subList(i, i + n) == rule.from) {
+                out.addAll(rule.to)
+                i += n
+            } else {
+                out.add(current[i])
+                i += 1
+            }
+        }
+        current = out
+    }
+    return current
+}
+
 fun applyMap(
     ipa: String,
     transcriptMap: TranscriptMap,
     aliases: Map<String, String> = emptyMap(),
+    rewrites: List<Rewrite> = emptyList(),
 ): String {
     val form = transcriptMap.normalize.ifBlank { "NFC" }
     val compiled = transcriptMap.rules
         .map { it.ipa to it.out }
         .sortedByDescending { it.first.length }
     val lookup = compiled.toMap()
-    val fold = if (transcriptMap.id == "ipa") emptyMap() else aliases
+    val literal = transcriptMap.id == "ipa"
+    val fold = if (literal) emptyMap() else aliases
     val tokens = tokenizeIpa(normalize(ipa, form))
     if (tokens.isEmpty()) {
         return greedy(ipa.split(Regex("\\s+")).joinToString(""), compiled, transcriptMap.unknown)
     }
-    val out = tokens.map { token ->
-        val folded = fold[token] ?: token
-        lookup[folded] ?: transcriptMap.unknown ?: folded
+    val folded = tokens.map { fold[it] ?: it }.filter { it.isNotEmpty() }
+    val out = applyRewrites(folded, if (literal) emptyList() else rewrites).map { phone ->
+        lookup[phone] ?: transcriptMap.unknown ?: phone
     }
     return normalize(out.joinToString(transcriptMap.separator), form)
 }

@@ -13,6 +13,7 @@ import com.kingstreet.gilaki.data.WireMap
 import com.kingstreet.gilaki.data.gilakiApi
 import com.kingstreet.gilaki.data.toTranscriptMap
 import com.kingstreet.gilaki.export.copyAudioAndIpa
+import com.kingstreet.gilaki.rewriter.Rewrite
 import com.kingstreet.gilaki.rewriter.TranscriptMap
 import com.kingstreet.gilaki.rewriter.applyMap
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,6 +36,7 @@ data class UiState(
     val apiBase: String = BuildConfig.DEFAULT_API_BASE,
     val maps: Map<String, TranscriptMap> = emptyMap(),
     val aliases: Map<String, String> = emptyMap(),
+    val rewrites: List<Rewrite> = emptyList(),
     val activeId: String = DEFAULT_PRESET,
     val ipa: String = "",
     val showIpa: Boolean = false,
@@ -83,7 +85,7 @@ class GilakiViewModel(app: Application) : AndroidViewModel(app) {
         val ipa = _state.value.ipa
         if (ipa.isBlank()) return ""
         val map = activeMap() ?: return ""
-        return applyMap(ipa, map, _state.value.aliases)
+        return applyMap(ipa, map, _state.value.aliases, _state.value.rewrites)
     }
 
     fun setLang(lang: String) {
@@ -209,7 +211,9 @@ class GilakiViewModel(app: Application) : AndroidViewModel(app) {
     private suspend fun loadPresets() {
         try {
             val api = gilakiApi(_state.value.apiBase)
-            val aliases = api.phonology().inventory.aliases
+            val inventory = api.phonology().inventory
+            val aliases = inventory.aliases
+            val rewrites = inventory.rewrites.filter { it.from.isNotEmpty() }.map { Rewrite(it.from, it.to) }
             val list = api.presets()
             val maps = linkedMapOf<String, TranscriptMap>()
             for (row in list.presets) {
@@ -218,7 +222,7 @@ class GilakiViewModel(app: Application) : AndroidViewModel(app) {
                 maps[row.id] = map
             }
             prefs.saveMapsCache(json.encodeToString(maps.mapValues { it.value.toWire() }))
-            _state.update { it.copy(maps = maps, aliases = aliases, status = "ready", error = "") }
+            _state.update { it.copy(maps = maps, aliases = aliases, rewrites = rewrites, status = "ready", error = "") }
         } catch (err: Exception) {
             fail(err)
         }

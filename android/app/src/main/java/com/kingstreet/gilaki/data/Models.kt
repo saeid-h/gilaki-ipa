@@ -32,6 +32,13 @@ data class PhonologyResponse(
 @Serializable
 data class InventoryWire(
     val aliases: Map<String, String> = emptyMap(),
+    val rewrites: List<RewriteWire> = emptyList(),
+)
+
+@Serializable
+data class RewriteWire(
+    val from: List<String> = emptyList(),
+    val to: List<String> = emptyList(),
 )
 
 @Serializable

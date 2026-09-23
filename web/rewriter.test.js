@@ -47,6 +47,16 @@ describe("shared rewriter cases", () => {
     assert.equal(applyMap("ʌ m", preset("ipa"), drop), "ʌ m");
   });
 
+  it("runs rewrites longest first and skips them on the IPA preset", () => {
+    const rewrites = [
+      { from: ["a"], to: ["o"] },
+      { from: ["n", "n"], to: ["n"] },
+      { from: ["a", "i"], to: ["a"] },
+    ];
+    assert.equal(applyMap("n n a i m", preset("varg-perso-arabic"), {}, rewrites), "نؤم");
+    assert.equal(applyMap("n n a i m", preset("ipa"), {}, rewrites), "n n a i m");
+  });
+
   it("lossy-persian may collapse ə", () => {
     const mapped = applyMap("m ə", preset("lossy-persian"));
     assert.ok(!mapped.includes("ə"));

@@ -1,4 +1,4 @@
-import { applyMap } from "./rewriter.js";
+import { applyMap } from "./rewriter.js?v=2";
 import { blobToWav, exportPaths, ipaFileBody } from "./export.js?v=1";
 import { STRINGS } from "./i18n.js";
 
@@ -34,6 +34,7 @@ const state = {
   base: localStorage.getItem(KEYS.base) || DEFAULT_BASE,
   maps: {},
   aliases: {},
+  rewrites: [],
   activeId: DEFAULT_PRESET,
   ipa: localStorage.getItem(KEYS.lastIpa) || "",
   showIpa: false,
@@ -66,7 +67,7 @@ function mappedText() {
   if (!state.ipa) return "";
   const map = activeMap();
   if (!map) return "";
-  return applyMap(state.ipa, map, state.aliases);
+  return applyMap(state.ipa, map, state.aliases, state.rewrites);
 }
 
 function setStatus(kind, extra = "") {
@@ -177,6 +178,7 @@ async function loadPresets() {
   }
   const phono = await api("/v1/phonology");
   state.aliases = phono.inventory?.aliases || {};
+  state.rewrites = phono.inventory?.rewrites || [];
   const list = await api("/v1/presets");
     const maps = {};
     for (const row of list.presets || []) {

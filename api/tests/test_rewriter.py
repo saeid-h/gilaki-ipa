@@ -61,6 +61,22 @@ def test_every_recognizer_phone_reaches_the_inventory():
     assert apply_map("uə ʌ ɴ w", get_preset("ipa")) == "uə ʌ ɴ w"
 
 
+REWRITES = [
+    {"from": ["a"], "to": ["o"]},
+    {"from": ["n", "n"], "to": ["n"]},
+    {"from": ["a", "i"], "to": ["a"]},
+]
+
+
+def test_rewrites_run_longest_first_and_skip_the_ipa_map():
+    from app.catalog import get_preset
+
+    varg = {**get_preset("varg-perso-arabic"), "aliases": {}, "rewrites": REWRITES}
+    assert apply_map("n n a i m", varg) == "نؤم"
+    ipa = {**get_preset("ipa"), "rewrites": REWRITES}
+    assert apply_map("n n a i m", ipa) == "n n a i m"
+
+
 def test_lossy_persian_may_collapse_schwa():
     from app.catalog import get_preset
     from app.rewriter import apply_map

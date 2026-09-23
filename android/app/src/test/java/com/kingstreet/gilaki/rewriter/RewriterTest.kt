@@ -58,6 +58,17 @@ class RewriterTest {
     }
 
     @Test
+    fun rewritesRunLongestFirstAndSkipTheIpaMap() {
+        val rewrites = listOf(
+            Rewrite(listOf("a"), listOf("o")),
+            Rewrite(listOf("n", "n"), listOf("n")),
+            Rewrite(listOf("a", "i"), listOf("a")),
+        )
+        assertEquals("نؤم", applyMap("n n a i m", preset("varg-perso-arabic"), emptyMap(), rewrites))
+        assertEquals("n n a i m", applyMap("n n a i m", preset("ipa"), emptyMap(), rewrites))
+    }
+
+    @Test
     fun lossyPersianMayCollapseSchwa() {
         val mapped = applyMap("m ə", preset("lossy-persian"))
         assertFalse(mapped.contains("ə"))

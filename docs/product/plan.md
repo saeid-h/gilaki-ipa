@@ -297,7 +297,7 @@ Public check: `https://1404kingstreet.com/gilaki-api/health`
 
 ### `GET /v1/phonology`
 
-Returns `schemas/gilaki_inventory.json` wrapped as `{ "ok": true, "inventory": { ... } }`.
+Returns `schemas/gilaki_inventory.json` wrapped as `{ "ok": true, "inventory": { ... } }`. Its `aliases` and `rewrites` are the inventory filter. Clients apply it on device before an orthographic map (see `docs/engineering/api.md`).
 
 ### `GET /v1/presets`
 
