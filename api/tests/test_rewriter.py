@@ -50,6 +50,17 @@ def test_learned_diacritic_folds_and_empty_alias_drops():
     assert apply_map("ʌ m", {**ipa, "aliases": {"ʌ": ""}}) == "ʌ m"
 
 
+def test_every_recognizer_phone_reaches_the_inventory():
+    from app.catalog import get_preset, load_inventory
+
+    inventory = load_inventory()
+    phones = set(inventory["vowels"]) | set(inventory["consonants"])
+    assert all(target in phones for target in inventory["aliases"].values())
+    varg = get_preset("varg-perso-arabic")
+    assert apply_map("uə ʌ w", varg) == "ۊٚو"
+    assert apply_map("uə ʌ w", get_preset("ipa")) == "uə ʌ w"
+
+
 def test_lossy_persian_may_collapse_schwa():
     from app.catalog import get_preset
     from app.rewriter import apply_map

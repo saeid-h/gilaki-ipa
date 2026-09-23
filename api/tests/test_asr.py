@@ -79,10 +79,10 @@ def test_parse_plain_phones_skips_timestamp_numbers():
 
 def test_unknown_symbol_does_not_crash_rewriter():
     inventory = load_inventory()
-    token = normalize_token("q", inventory)
-    assert token == "q"
-    mapped = apply_map("q ə", {"separator": "", "rules": [{"ipa": "ə", "out": "e"}]})
-    assert "q" in mapped
+    token = normalize_token("@", inventory)
+    assert token == "@"
+    mapped = apply_map("@ ə", {"separator": "", "rules": [{"ipa": "ə", "out": "e"}]})
+    assert "@" in mapped
 
 
 def test_parse_timestamp_lines():

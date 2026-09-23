@@ -6,61 +6,61 @@
     "n": 259
   },
   "eval_after": {
-    "varg-perso-arabic": 0.9870142700195176,
-    "lossy-persian": 1.0285520854308572,
+    "varg-perso-arabic": 0.9447560134442391,
+    "lossy-persian": 0.9859622749116959,
     "n": 259
   },
   "kept": true,
   "dev_piles": {
-    "right": 4150,
-    "wrong": 6202,
-    "insertion": 1570,
-    "wrong_symbol": 283
+    "right": 4169,
+    "wrong": 5863,
+    "wrong_symbol": 578,
+    "insertion": 1595
   },
   "top_wrong_phones": [
     {
       "phone": "uə",
-      "count": 474
+      "count": 471
     },
     {
       "phone": "ʌ",
-      "count": 420
+      "count": 406
     },
     {
       "phone": "ɪ",
-      "count": 384
+      "count": 383
     },
     {
       "phone": "a",
-      "count": 361
+      "count": 358
     },
     {
       "phone": "e",
-      "count": 316
-    },
-    {
-      "phone": "ɒ",
       "count": 312
     },
     {
+      "phone": "ɒ",
+      "count": 309
+    },
+    {
       "phone": "o",
-      "count": 180
+      "count": 177
     },
     {
       "phone": "ə",
-      "count": 180
+      "count": 173
     },
     {
       "phone": "ɴ",
-      "count": 168
+      "count": 170
     },
     {
       "phone": "ð",
-      "count": 148
+      "count": 150
     },
     {
       "phone": "tʂ",
-      "count": 138
+      "count": 140
     },
     {
       "phone": "ʂ",
@@ -68,35 +68,35 @@
     },
     {
       "phone": "tɕ",
-      "count": 108
+      "count": 105
     },
     {
-      "phone": "i",
-      "count": 103
+      "phone": "n",
+      "count": 101
     },
     {
       "phone": "ɹ̩",
       "count": 100
     },
     {
-      "phone": "n",
-      "count": 99
+      "phone": "ɛ",
+      "count": 97
     },
     {
-      "phone": "ɛ",
-      "count": 98
+      "phone": "i",
+      "count": 95
     },
     {
       "phone": "b̞",
-      "count": 93
-    },
-    {
-      "phone": "iː",
-      "count": 89
+      "count": 94
     },
     {
       "phone": "ʁ",
-      "count": 88
+      "count": 85
+    },
+    {
+      "phone": "iː",
+      "count": 84
     }
   ],
   "letters": [
@@ -105,80 +105,80 @@
       "misses": 455
     },
     {
-      "letter": "ۊ",
-      "misses": 440
-    },
-    {
       "letter": "ه",
       "misses": 431
     },
     {
       "letter": "ا",
-      "misses": 410
+      "misses": 409
     },
     {
       "letter": "ن",
-      "misses": 276
+      "misses": 230
     },
     {
-      "letter": "ت",
-      "misses": 233
-    },
-    {
-      "letter": "ٚ",
-      "misses": 215
+      "letter": "ۊ",
+      "misses": 204
     },
     {
       "letter": "د",
-      "misses": 208
-    },
-    {
-      "letter": "ر",
-      "misses": 195
-    },
-    {
-      "letter": "ی",
-      "misses": 194
+      "misses": 198
     },
     {
       "letter": "م",
-      "misses": 188
+      "misses": 178
+    },
+    {
+      "letter": "ت",
+      "misses": 174
+    },
+    {
+      "letter": "ٚ",
+      "misses": 169
+    },
+    {
+      "letter": "ر",
+      "misses": 151
     },
     {
       "letter": "ؤ",
-      "misses": 163
-    },
-    {
-      "letter": "ش",
-      "misses": 161
-    },
-    {
-      "letter": "ک",
-      "misses": 140
+      "misses": 138
     },
     {
       "letter": "ب",
-      "misses": 137
+      "misses": 134
+    },
+    {
+      "letter": "ی",
+      "misses": 114
     },
     {
       "letter": "و",
-      "misses": 132
-    },
-    {
-      "letter": "س",
-      "misses": 111
-    },
-    {
-      "letter": "ج",
       "misses": 106
     },
     {
-      "letter": "ئ",
-      "misses": 76
+      "letter": "ج",
+      "misses": 105
     },
     {
-      "letter": "ل",
-      "misses": 74
+      "letter": "س",
+      "misses": 94
+    },
+    {
+      "letter": "ک",
+      "misses": 89
+    },
+    {
+      "letter": "ئ",
+      "misses": 78
+    },
+    {
+      "letter": "گ",
+      "misses": 69
+    },
+    {
+      "letter": "خ",
+      "misses": 64
     }
   ]
 }

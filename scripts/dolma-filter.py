@@ -82,7 +82,7 @@ def strip_modifiers(phone: str) -> str:
         if ch == "ː":
             kept.append(ch)
             continue
-        if unicodedata.category(ch) in {"Mn", "Sk"}:
+        if unicodedata.category(ch) in {"Mn", "Lm", "Sk"}:
             continue
         kept.append(ch)
     return "".join(kept)
@@ -321,7 +321,7 @@ def main() -> int:
         after,
         keep,
         clips,
-        merged if keep else seed,
+        {**(inventory.get("aliases") or {}), **(accepted if keep else {})},
         inverse,
         phone_roles,
     )
