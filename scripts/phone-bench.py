@@ -180,15 +180,17 @@ def persian_tokens(ipa: str) -> list[str] | None:
 
 
 def persian_ref(ipa: str) -> list[Ref] | None:
-    tokens = persian_tokens(ipa)
-    if tokens is None:
-        return None
     refs = []
-    for tok in tokens:
-        allowed = PERSIAN.get(tok, {tok})
-        if not allowed <= PHONES:
+    for word in ipa.split():
+        tokens = persian_tokens(word)
+        if tokens is None:
             return None
-        refs.append(Ref(frozenset(allowed)))
+        for k, tok in enumerate(tokens):
+            allowed = PERSIAN.get(tok, {tok})
+            if not allowed <= PHONES:
+                return None
+            # The phonemizer writes a glottal stop before every vowel-initial word; speakers often drop it.
+            refs.append(Ref(frozenset(allowed), optional=(k == 0 and tok == "ʔ")))
     return refs
 
 
