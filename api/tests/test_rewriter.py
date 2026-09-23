@@ -57,8 +57,8 @@ def test_every_recognizer_phone_reaches_the_inventory():
     phones = set(inventory["vowels"]) | set(inventory["consonants"])
     assert all(target in phones for target in inventory["aliases"].values())
     varg = get_preset("varg-perso-arabic")
-    assert apply_map("uə ʌ w", varg) == "ۊٚو"
-    assert apply_map("uə ʌ w", get_preset("ipa")) == "uə ʌ w"
+    assert apply_map("uə ʌ ɴ w", varg) == "ۊانو"
+    assert apply_map("uə ʌ ɴ w", get_preset("ipa")) == "uə ʌ ɴ w"
 
 
 def test_lossy_persian_may_collapse_schwa():

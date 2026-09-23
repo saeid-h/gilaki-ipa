@@ -1,0 +1,71 @@
+{
+ "passes": [
+  {
+   "pass": "smoking",
+   "start": {
+    "dolma_final_per": 0.4728,
+    "persian_final_per": 0.6054,
+    "cer_varg-perso-arabic": 0.6167,
+    "cer_lossy-persian": 0.7158,
+    "academic_latin_chars": 20627
+   },
+   "end": {
+    "dolma_final_per": 0.4493,
+    "persian_final_per": 0.587,
+    "cer_varg-perso-arabic": 0.6073,
+    "cer_lossy-persian": 0.6854,
+    "academic_latin_chars": 20627
+   },
+   "rules": [
+    {
+     "rule": "ɴ -> n",
+     "basis": "persian",
+     "gain": {
+      "persian": 0.0049,
+      "dolma": 0.014
+     }
+    },
+    {
+     "rule": "ð -> d",
+     "basis": "persian",
+     "gain": {
+      "persian": 0.0058,
+      "dolma": 0.005
+     }
+    },
+    {
+     "rule": "ʌ -> a",
+     "basis": "persian",
+     "gain": {
+      "persian": 0.0048,
+      "dolma": -0.0003
+     }
+    },
+    {
+     "rule": "tʂ -> t",
+     "basis": "persian",
+     "gain": {
+      "persian": 0.0026,
+      "dolma": 0.0049
+     }
+    },
+    {
+     "rule": "k͡p̚ -> k",
+     "basis": "dolma-only",
+     "gain": {
+      "persian": 0.0007,
+      "dolma": 0.004
+     }
+    },
+    {
+     "rule": "ɨ -> ə",
+     "basis": "dolma-only",
+     "gain": {
+      "persian": -0.0004,
+      "dolma": 0.0023
+     }
+    }
+   ]
+  }
+ ]
+}
