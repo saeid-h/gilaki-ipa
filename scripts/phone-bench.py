@@ -342,9 +342,10 @@ class Score:
     v_tot: int = 0
     c_err: int = 0
     c_tot: int = 0
+    ins: int = 0
 
     def add(self, other: "Score") -> None:
-        for f in ("errors", "total", "v_err", "v_tot", "c_err", "c_tot"):
+        for f in ("errors", "total", "v_err", "v_tot", "c_err", "c_tot", "ins"):
             setattr(self, f, getattr(self, f) + getattr(other, f))
 
     @property
@@ -356,6 +357,11 @@ class Score:
             "per": round(self.per, 4),
             "vowel_per": round(self.v_err / self.v_tot, 4) if self.v_tot else None,
             "consonant_per": round(self.c_err / self.c_tot, 4) if self.c_tot else None,
+            "error_share": {
+                "vowel": round(self.v_err / self.errors, 4) if self.errors else None,
+                "consonant": round(self.c_err / self.errors, 4) if self.errors else None,
+                "insertion": round(self.ins / self.errors, 4) if self.errors else None,
+            },
             "ref_phones": self.total,
         }
 
@@ -367,6 +373,7 @@ def score_ops(ops) -> Score:
             continue
         if kind == "ins":
             s.errors += 1
+            s.ins += 1
             continue
         s.total += 1
         bad = kind != "ok"
@@ -422,12 +429,12 @@ def report(clips: list[Clip], aliases: dict[str, str], rewrites=None) -> dict:
     return out
 
 
-def confusions(clips: list[Clip], aliases: dict[str, str], limit: int = 25) -> list[dict]:
+def confusions(clips: list[Clip], aliases: dict[str, str], rewrites=None, limit: int = 25) -> list[dict]:
     pairs: Counter = Counter()
     for c in clips:
         if c.split == "final":
             continue
-        for kind, hyp, ref in align(apply_filter(c.raw, aliases), c.ref):
+        for kind, hyp, ref in align(apply_filter(c.raw, aliases, rewrites), c.ref):
             if kind == "sub":
                 pairs[(hyp, "/".join(sorted(ref.allowed)))] += 1
             elif kind == "ins":
@@ -440,15 +447,20 @@ def confusions(clips: list[Clip], aliases: dict[str, str], limit: int = 25) -> l
 def main() -> int:
     clips = load_all()
     current = dict(INVENTORY.get("aliases") or {})
+    rewrites = list(INVENTORY.get("rewrites") or [])
     counts = Counter((c.corpus, c.split) for c in clips)
     print("clips:", {f"{k[0]}/{k[1]}": v for k, v in sorted(counts.items())})
     result = {"clips": {f"{k[0]}/{k[1]}": v for k, v in sorted(counts.items())}}
-    for name, aliases in (("raw", {}), ("old", ORIGINAL), ("current", current)):
-        result[name] = report(clips, aliases)
+    for name, aliases, rules in (("raw", {}, []), ("old", ORIGINAL, []), ("current", current, rewrites)):
+        result[name] = report(clips, aliases, rules)
         print(name)
         for key, row in result[name].items():
-            print(f"  {key:18} PER {row['per']:.3f}  vowels {row['vowel_per']:.3f}  consonants {row['consonant_per']:.3f}")
-    result["confusions_current"] = confusions(clips, current)
+            share = row["error_share"]
+            print(
+                f"  {key:18} PER {row['per']:.3f}  vowels {row['vowel_per']:.3f}  consonants {row['consonant_per']:.3f}"
+                f"  | share V {share['vowel']:.2f} C {share['consonant']:.2f} ins {share['insertion']:.2f}"
+            )
+    result["confusions_current"] = confusions(clips, current, rewrites)
     BENCH.mkdir(parents=True, exist_ok=True)
     (BENCH / "baseline.json").write_text(json.dumps(result, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print("top confusions (hyp -> ref):", [(r["hyp"], r["ref"], r["count"]) for r in result["confusions_current"][:15]])
