@@ -337,8 +337,8 @@ def final_report(clips, state: State) -> dict:
         filtered = " ".join(bench.apply_filter(tokenize_ipa(clip["ipa"]), state.aliases, state.rewrites))
         gold = dolma.plain_letters(clip["sentence"])
         for key in cers:
-            cers[key] += dolma.cer(gold, dolma.plain_letters(apply_map(filtered, {**maps[key], "aliases": {}})))
-        latin_len += len(apply_map(filtered, {**maps["academic-latin"], "aliases": {}}))
+            cers[key] += dolma.cer(gold, dolma.plain_letters(apply_map(filtered, {**maps[key], "aliases": {}, "rewrites": []})))
+        latin_len += len(apply_map(filtered, {**maps["academic-latin"], "aliases": {}, "rewrites": []}))
     for key in cers:
         out[f"cer_{key}"] = round(cers[key] / len(test), 4)
     out["academic_latin_chars"] = latin_len
