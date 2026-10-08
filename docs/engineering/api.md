@@ -83,7 +83,7 @@ JSON response:
 
 `backend` follows `ASR_BACKEND`. Clients map IPA locally; they do not need to special-case Allosaurus.
 
-The `ipa` field is the recognizer’s phones as emitted (`ALLOSAURUS_LANG=ipa`). Nothing is dropped or rewritten there. Orthographic maps then apply the inventory filter (`schemas/gilaki_inventory.json` aliases, including an empty value that drops a phone) and then their letter rules. The IPA preset skips the filter. `ALLOSAURUS_LANG=glk` forces the Gilaki inventory inside the recognizer instead.
+The `ipa` field holds the recognizer's own phone symbols (`ALLOSAURUS_LANG=ipa`). Nothing is dropped or rewritten there. When `schemas/phone_decoder.json` is present (`DECODER_PATH`), the server picks the phone sequence from the recognizer's per-frame top candidates with a Gilaki phone-pair prior instead of taking the single best phone per frame. Each chosen phone is still reported as a raw recognizer symbol with its timestamp. Set `DECODER_PATH=` (empty) to get the plain recognizer output. Orthographic maps then apply the inventory filter (`schemas/gilaki_inventory.json` aliases, including an empty value that drops a phone, then `rewrites`) and then their letter rules. The IPA preset skips the filter. `ALLOSAURUS_LANG=glk` forces the Gilaki inventory inside the recognizer instead.
 
 `phones[].start/end` may be null if the backend has no alignment.
 

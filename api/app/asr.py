@@ -7,6 +7,7 @@ from pathlib import Path
 
 from .audio import TEMP_PREFIX
 from .catalog import load_inventory
+from .decoder import decode, load_decoder, top_frames
 from .settings import settings
 
 
@@ -166,11 +167,15 @@ class AllosaurusBackend(AsrBackend):
         handle = tempfile.NamedTemporaryFile(prefix=TEMP_PREFIX, suffix=".wav", delete=False)
         path = Path(handle.name)
         handle.close()
+        lang_id = allosaurus_lang_id()
+        config = load_decoder() if lang_id == "ipa" else None
         try:
             path.write_bytes(wav_bytes)
+            if config is not None:
+                return AsrResult(phones=self._decode(path, lang_id, config), backend=self.name)
             raw = self.recognizer().recognize(
                 str(path),
-                lang_id=allosaurus_lang_id(),
+                lang_id=lang_id,
                 timestamp=True,
             )
         except Exception as exc:  # noqa: BLE001 — surface as 501 backend_unavailable
@@ -184,6 +189,29 @@ class AllosaurusBackend(AsrBackend):
                 continue
             phones.append(phone)
         return AsrResult(phones=phones, backend=self.name)
+
+    def _decode(self, path: Path, lang_id: str, config: dict) -> list[Phone]:
+        """Allosaurus frame scores re-decoded with the Gilaki prior; same masking as `recognize`."""
+        import numpy as np
+        from allosaurus.am.utils import move_to_tensor
+        from allosaurus.audio import read_audio
+
+        rec = self.recognizer()
+        feat = rec.pm.compute(read_audio(str(path)))
+        batch, batch_len = move_to_tensor(
+            [np.expand_dims(feat, 0), np.array([feat.shape[0]], dtype=np.int32)], rec.config.device_id
+        )
+        logits = rec.am(batch, batch_len).detach().cpu().numpy()[0].copy()
+        mask = rec.lm.inventory.get_mask(lang_id, approximation=rec.config.approximate)
+        logits = mask.mask_logits(logits)
+        units = [""] + [mask.get_units([i])[0] if i in mask.unit_map else "" for i in range(1, logits.shape[1])]
+        blank, idx, lp = top_frames(logits)
+        aliases = load_inventory().get("aliases") or {}
+        shift, size = rec.config.window_shift, rec.config.window_size
+        return [
+            Phone(ipa=raw, start=round(shift * frame, 3), end=round(shift * frame + size, 3))
+            for _, raw, frame in decode(blank, idx, lp, units, aliases, config)
+        ]
 
 
 def get_backend(name: str) -> AsrBackend:

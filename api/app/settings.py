@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     presets_dir: str = "../schemas/presets"
     inventory_path: str = "../schemas/gilaki_inventory.json"
     allosaurus_lang: str = "ipa"
+    decoder_path: str = "../schemas/phone_decoder.json"
 
     @property
     def cors_origin_list(self) -> list[str]:

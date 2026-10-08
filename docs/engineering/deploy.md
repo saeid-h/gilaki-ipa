@@ -38,6 +38,8 @@ First `read_recognizer()` downloads weights (outbound HTTPS, no Hugging Face tok
 
 Leave `ALLOSAURUS_LANG=ipa` so the IPA line is the model's own phones. `ALLOSAURUS_LANG=glk` forces the Gilaki inventory and rewrites sounds outside that set.
 
+`DECODER_PATH` defaults to `../schemas/phone_decoder.json`, the Gilaki re-decoder. It is used only with `ALLOSAURUS_LANG=ipa`. Deploy it with the rest of `schemas/` and restart the API after changing it. It adds no model and little memory. Set `DECODER_PATH=` (empty) to fall back to the plain recognizer output.
+
 ## Reverse proxy (this host: Caddy in Docker)
 
 Uvicorn stays on `127.0.0.1:18741`. Port 443 is `real-estate-investment-caddy-1`. A bridge-network Caddy cannot reach that loopback bind (`host.docker.internal` is the docker0 gateway, not `127.0.0.1`, and UFW drops it). On this VM Caddy runs with **`network_mode: host`** so `reverse_proxy 127.0.0.1:18741` is the host uvicorn. The analyzer backend is published on host `8000`, so `/api/*` and `/health` use `127.0.0.1:8000` as well.
